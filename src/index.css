@@ -1,0 +1,59 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+textarea:focus, input:focus{
+  outline: none;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Montserrat;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: url('../public/assets/fonts/Montserrat-VariableFont_wght.ttf');
+}
+
+@font-face {
+  font-family: "Offside";
+  src: url("../public/assets/fonts/Offside-Regular.ttf");
+}
+
+.bg-adminlogin{
+  height: 100vh;
+  width: 100%;
+  background: linear-gradient(90deg, #F3F8FE 0%, #F3F8FE 50%, #FFFFFF 50%, #FFFFFF 100%)
+}
+
+.input-loginpage{
+  border: none;
+  background-color: rgba(255, 255, 255, 0);
+  border-bottom: 3px solid #2E73B4;
+  padding: 10px 10px 5px 30px;
+  font-weight: 500;
+  width: 100%;
+  font-size: 15px;
+}
+
+.shadow-box{
+  box-shadow: 0 0 40px rgba(134, 134, 134, 0.199);
+}
+
+
+@media screen and (max-width: 767.98px) {
+  .bg-adminlogin{
+      background: linear-gradient(180deg, #F3F8FE 0%, #F3F8FE 50%, #FFFFFF 50%, #FFFFFF 100%);
+      height: calc(100vh - 120px);
+  }
+
+}
