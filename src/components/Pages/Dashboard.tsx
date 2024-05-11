@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Button, Layout } from "antd";
 import Header from "../Layouts/Header";
 import Sider from "../Layouts/Sider";
-import { useAuth } from "../Hooks/AuthProvider";
+import { useAuth } from "../hooks/AuthProvider";
 
 const { Content } = Layout;
 

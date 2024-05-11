@@ -42,13 +42,17 @@ const Sider = ({ isMobile }: Props) => {
           <a href="#">
             {!isMobile ? (
               <img
-                src={`${import.meta.env.BASE_URL}/assets/images/admin-logo.png`}
+                src={`${
+                  import.meta.env.BASE_URL
+                }public/assets/images/admin-logo.png`}
                 className="w-6/12"
                 alt=""
               />
             ) : (
               <img
-                src={`${import.meta.env.BASE_URL}/assets/images/admin-logo-mobile.png`}
+                src={`${
+                  import.meta.env.BASE_URL
+                }public/assets/images/admin-logo-mobile.png`}
                 className="w-[40px]"
                 alt=""
               />

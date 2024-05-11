@@ -12,8 +12,12 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<string>(localStorage.getItem("username") || "");
-  const [token, setToken] = useState<string>(localStorage.getItem("token") || "");
+  const [user, setUser] = useState<string>(
+    localStorage.getItem("username") || ""
+  );
+  const [token, setToken] = useState<string>(
+    localStorage.getItem("token") || ""
+  );
   const navigate = useNavigate();
 
   const loginAction = async (data: any) => {
