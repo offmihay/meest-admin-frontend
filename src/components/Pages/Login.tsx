@@ -33,7 +33,7 @@ const Login = () => {
           <div className="max-w-[670px] h-[500px] md:h-[450px] text-mainblue m-auto flex flex-col md:flex-row relative rounded-3xl overflow-hidden shadow-box">
             <div className="absolute left-8 top-8">
               <img
-                src={`${import.meta.env.BASE_URL}public/assets/images/logo.png`}
+                src={`${import.meta.env.BASE_URL}assets/images/logo.png`}
                 alt=""
               />
             </div>

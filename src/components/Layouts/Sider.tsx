@@ -44,7 +44,7 @@ const Sider = ({ isMobile }: Props) => {
               <img
                 src={`${
                   import.meta.env.BASE_URL
-                }public/assets/images/admin-logo.png`}
+                }assets/images/admin-logo.png`}
                 className="w-6/12"
                 alt=""
               />
@@ -52,7 +52,7 @@ const Sider = ({ isMobile }: Props) => {
               <img
                 src={`${
                   import.meta.env.BASE_URL
-                }public/assets/images/admin-logo-mobile.png`}
+                }assets/images/admin-logo-mobile.png`}
                 className="w-[40px]"
                 alt=""
               />
