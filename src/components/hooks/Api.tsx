@@ -1,4 +1,4 @@
-const BASE_URL: string = "https://meest-back-e18db4f449d7.herokuapp.com";
+const BASE_URL: string = "https://meest-back-e18db4f449d7.herokuapp.com/api";
 // const BASE_URL: string = "http://localhost:3000/api";
 
 export async function fetchJson(url: string, token?: string): Promise<any> {
