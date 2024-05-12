@@ -25,16 +25,15 @@ const Dashboard = () => {
     window.addEventListener("resize", handleResize);
   });
 
-  async function getBrands() {
+  const [usersData, setUsersData] = useState<any[]>([]);
+
+  async function getUsers() {
     const token = localStorage.getItem("token");
-    if (token) {
-      token.toString();
-      try {
-        const data = await fetchJson("all-brands", token);
-        console.log("Received data:", data);
-      } catch (error: any) {
-        console.error("Error:", error.message);
-      }
+    try {
+      const data = await fetchJson("api/all-users", token);
+      setUsersData(data);
+    } catch (error: any) {
+      console.error("Error:", error.message);
     }
   }
 
@@ -45,20 +44,39 @@ const Dashboard = () => {
       <Sider isMobile={isMobile} />
       <Layout>
         <Header isMobile={isMobile} />
-        <Layout style={{ padding: "0 24px 24px" }}>
-          <Content
-            style={{
-              padding: 24,
-              margin: 0,
-              minHeight: 280,
-            }}
-          >
-            <Button onClick={() => auth.logOut()}>logout</Button>
-            <Button onClick={() => getBrands()}>
-              get brands (works only with Authorization)
-            </Button>
-          </Content>
-        </Layout>
+        <Content
+          style={{
+            padding: 24,
+            margin: 0,
+            minHeight: 280,
+          }}
+        >
+          <Button onClick={() => auth.logOut()}>logout</Button>
+          <Button onClick={() => getUsers()}>
+            get all users (need Authorization)
+          </Button>
+          <div>
+            {usersData &&
+              usersData.map((obj, index) => (
+                <>
+                  <p key={index}>
+                    {Object.keys(obj).map((key, i) => (
+                      <>
+                        <span key={i}>
+                          <span className="text-[#FF0000]">{key}</span>:{" "}
+                          {obj[key]}
+                          {i !== Object.keys(obj).length - 1 ? ", " : ""}
+                        </span>
+                        <br></br>
+                      </>
+                    ))}
+                  </p>
+                  <br></br>
+                  <br></br>
+                </>
+              ))}
+          </div>
+        </Content>
       </Layout>
     </Layout>
   );

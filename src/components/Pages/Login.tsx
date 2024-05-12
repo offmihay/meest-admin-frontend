@@ -28,7 +28,7 @@ const Login = () => {
 
   return (
     <form>
-      <div className="bg-adminlogin flex flex-col px-4">
+      <div className="bg-adminlogin flex flex-col px-6">
         <div className="m-auto relative">
           <div className="max-w-[670px] h-[500px] md:h-[450px] text-mainblue m-auto flex flex-col md:flex-row relative rounded-3xl overflow-hidden shadow-box">
             <div className="absolute left-8 top-8">

@@ -8,7 +8,6 @@ const Routes = () => {
   return (
     <Router>
       <Route path="login" element={<Login />} />
-      <Route path="" element={<Dashboard />} />
       <Route element={<PrivateRoute />}>
         <Route path="*" element={<Navigate to="dashboard" />}></Route>
       </Route>

@@ -1,7 +1,10 @@
-const BASE_URL: string = "https://meest-back-e18db4f449d7.herokuapp.com/api";
-// const BASE_URL: string = "http://localhost:3000/api";
+const BASE_URL: string = "https://meest-back-e18db4f449d7.herokuapp.com";
+// const BASE_URL: string = "http://localhost:3000";
 
-export async function fetchJson(url: string, token?: string): Promise<any> {
+export async function fetchJson(
+  url: string,
+  token?: string | null
+): Promise<any> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
@@ -24,7 +27,7 @@ export async function fetchJson(url: string, token?: string): Promise<any> {
 export async function postJson(
   url: string,
   payload: any,
-  token?: string
+  token?: string | null
 ): Promise<any> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",

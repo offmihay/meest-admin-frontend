@@ -53,7 +53,7 @@ textarea:focus, input:focus{
 @media screen and (max-width: 767.98px) {
   .bg-adminlogin{
       background: linear-gradient(180deg, #F3F8FE 0%, #F3F8FE 50%, #FFFFFF 50%, #FFFFFF 100%);
-      height: calc(100vh - 120px);
+      height: calc(100vh - 150px);
   }
 
 }

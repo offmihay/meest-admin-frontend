@@ -13,7 +13,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<string>(
-    localStorage.getItem("username") || ""
+    localStorage.getItem("userID") || ""
   );
   const [token, setToken] = useState<string>(
     localStorage.getItem("token") || ""
@@ -22,25 +22,24 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const loginAction = async (userData: any) => {
     try {
-      const response = await postJson("login", userData);
+      const response = await postJson("api/login", userData);
       if (response.userData) {
-        console.log("asd");
-        setUser(response.userData.username);
+        setUser(response.userData.userID);
         setToken(response.userData.token);
+        localStorage.setItem("userID", response.userData.userID);
         localStorage.setItem("token", response.userData.token);
-        localStorage.setItem("username", response.userData.username);
         navigate("meest-admin/dashboard");
         return;
       }
     } catch (error: any) {
-      alert("Error");
+      alert("Username or password is not valid!");
     }
   };
 
   const logOut = () => {
     setUser("");
     setToken("");
-    localStorage.removeItem("username");
+    localStorage.removeItem("userID");
     localStorage.removeItem("token");
     navigate("meest-admin/login");
   };
