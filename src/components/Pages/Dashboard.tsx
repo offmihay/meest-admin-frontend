@@ -5,6 +5,8 @@ import Header from "../Layouts/Header";
 import Sider from "../Layouts/Sider";
 import { useAuth } from "../hooks/AuthProvider";
 
+import { fetchJson } from "../hooks/Api";
+
 const { Content } = Layout;
 
 const Dashboard = () => {
@@ -23,8 +25,23 @@ const Dashboard = () => {
     window.addEventListener("resize", handleResize);
   });
 
+  async function getBrands() {
+    const token = localStorage.getItem("token");
+    if (token) {
+      token.toString();
+      try {
+        const data = await fetchJson("all-brands", token);
+        console.log("Received data:", data);
+      } catch (error: any) {
+        console.error("Error:", error.message);
+      }
+    }
+  }
+
   return (
-    <Layout style={{ background: "white", height: "100dvh", overflow: "hidden" }}>
+    <Layout
+      style={{ background: "white", height: "100dvh", overflow: "hidden" }}
+    >
       <Sider isMobile={isMobile} />
       <Layout>
         <Header isMobile={isMobile} />
@@ -37,6 +54,9 @@ const Dashboard = () => {
             }}
           >
             <Button onClick={() => auth.logOut()}>logout</Button>
+            <Button onClick={() => getBrands()}>
+              get brands (works only with Authorization)
+            </Button>
           </Content>
         </Layout>
       </Layout>

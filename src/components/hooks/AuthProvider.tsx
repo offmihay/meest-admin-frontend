@@ -5,7 +5,7 @@ import { postJson } from "./Api";
 interface AuthContextType {
   token: string;
   user: any | null;
-  loginAction: (data: any) => Promise<void>;
+  loginAction: (userData: any) => Promise<void>;
   logOut: () => void;
 }
 
@@ -20,21 +20,20 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
   const navigate = useNavigate();
 
-  const loginAction = async (data: any) => {
+  const loginAction = async (userData: any) => {
     try {
-      const response = await postJson("users", data);
-      if (response.data) {
-        setUser(response.data.username);
-        setToken(response.data.token);
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("username", response.data.username);
+      const response = await postJson("login", userData);
+      if (response.userData) {
+        console.log("asd");
+        setUser(response.userData.username);
+        setToken(response.userData.token);
+        localStorage.setItem("token", response.userData.token);
+        localStorage.setItem("username", response.userData.username);
         navigate("meest-admin/dashboard");
         return;
-      } else {
-        alert("not valid!!");
       }
-    } catch (err) {
-      console.error(err);
+    } catch (error: any) {
+      alert("Error");
     }
   };
 
