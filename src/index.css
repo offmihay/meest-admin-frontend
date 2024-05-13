@@ -21,12 +21,12 @@ textarea:focus, input:focus{
 
 @font-face {
   font-family: "Montserrat";
-  src: url('../assets/fonts/Montserrat-VariableFont_wght.ttf');
+  src: url('../public/assets/fonts/Montserrat-VariableFont_wght.ttf');
 }
 
 @font-face {
   font-family: "Offside";
-  src: url("../assets/fonts/Offside-Regular.ttf");
+  src: url("../public/assets/fonts/Offside-Regular.ttf");
 }
 
 .bg-adminlogin{
