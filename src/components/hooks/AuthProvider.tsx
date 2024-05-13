@@ -1,17 +1,15 @@
-import { createContext, useState, useContext } from "react";
+// authProvider.tsx
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { postJson } from "./Api";
+import AuthContext from "./AuthContext";
+import { AuthContextType } from "../types/AuthContextType";
 
-interface AuthContextType {
-  token: string;
-  user: any | null;
-  loginAction: (userData: any) => Promise<void>;
-  logOut: () => void;
+interface AuthProviderProps {
+  children: React.ReactNode;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<string>(
     localStorage.getItem("userID") || ""
   );
@@ -20,7 +18,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
   const navigate = useNavigate();
 
-  const loginAction = async (userData: any) => {
+  const loginAction = async (userData: object) => {
     try {
       const response = await postJson("api/login", userData);
       if (response.userData) {
@@ -44,19 +42,18 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     navigate("meest-admin/login");
   };
 
+  const authContextValue: AuthContextType = {
+    token,
+    user,
+    loginAction,
+    logOut,
+  };
+
   return (
-    <AuthContext.Provider value={{ token, user, loginAction, logOut }}>
+    <AuthContext.Provider value={authContextValue}>
       {children}
     </AuthContext.Provider>
   );
 };
 
 export default AuthProvider;
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};

@@ -1,6 +1,6 @@
 import { SearchOutlined } from "@ant-design/icons";
 import { Input, Layout } from "antd";
-import ProfileNav from "../Elements/ProfileNav";
+import ProfileNav from "../elements/ProfileNav";
 
 export interface Props {
   isMobile: boolean;

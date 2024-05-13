@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
 import { Button, Layout } from "antd";
-import Header from "../Layouts/Header";
-import Sider from "../Layouts/Sider";
-import { useAuth } from "../hooks/AuthProvider";
+import Header from "../layouts/Header";
+import Sider from "../layouts/Sider";
+import { useAuth } from "../hooks/AuthHooks";
 
 import { fetchJson } from "../hooks/Api";
 
@@ -28,9 +28,8 @@ const Dashboard = () => {
   const [usersData, setUsersData] = useState<any[]>([]);
 
   async function getUsers() {
-    const token = localStorage.getItem("token");
     try {
-      const data = await fetchJson("api/all-users", token);
+      const data = await fetchJson("api/all-users");
       setUsersData(data);
     } catch (error: any) {
       console.error("Error:", error.message);

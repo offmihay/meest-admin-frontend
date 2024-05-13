@@ -1,7 +1,7 @@
 import { Routes as Router, Route, Navigate } from "react-router-dom";
 
-import Login from "./components/Pages/Login";
-import Dashboard from "./components/Pages/Dashboard";
+import Login from "./components/pages/Login";
+import Dashboard from "./components/pages/Dashboard";
 import PrivateRoute from "./components/hooks/PrivateRoute";
 
 const Routes = () => {
@@ -9,10 +9,7 @@ const Routes = () => {
     <Router>
       <Route path="login" element={<Login />} />
       <Route element={<PrivateRoute />}>
-        <Route path="*" element={<Navigate to="dashboard" />}></Route>
-      </Route>
-
-      <Route element={<PrivateRoute />}>
+        <Route path="*" element={<Navigate to="dashboard" />} />
         <Route path="dashboard" element={<Dashboard />} />
       </Route>
     </Router>

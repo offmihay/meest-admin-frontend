@@ -1,19 +1,17 @@
-const BASE_URL: string = "https://meest-back-e18db4f449d7.herokuapp.com";
-// const BASE_URL: string = "http://localhost:3000";
+// const BASE_URL: string = "https://meest-back-e18db4f449d7.herokuapp.com";
+const BASE_URL: string = "http://localhost:3000";
 
-export async function fetchJson(
-  url: string,
-  token?: string | null
-): Promise<any> {
+export async function fetchJson(url: string): Promise<any> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
 
+  const token = localStorage.getItem("token");
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const response: Response = await fetch(`${BASE_URL}/${url}`, {
+  const response = await fetch(`${BASE_URL}/${url}`, {
     headers,
   });
 
@@ -24,20 +22,17 @@ export async function fetchJson(
   return await response.json();
 }
 
-export async function postJson(
-  url: string,
-  payload: any,
-  token?: string | null
-): Promise<any> {
+export async function postJson(url: string, payload: object): Promise<any> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
 
+  const token = localStorage.getItem("token");
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const response: Response = await fetch(`${BASE_URL}/${url}`, {
+  const response = await fetch(`${BASE_URL}/${url}`, {
     method: "POST",
     headers,
     body: JSON.stringify(payload),
