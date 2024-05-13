@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 
-import { Button, Layout } from "antd";
+import { Layout } from "antd";
 import Header from "../layouts/Header";
 import Sider from "../layouts/Sider";
 import { useAuth } from "../hooks/AuthHooks";
-
-import { fetchJson } from "../hooks/Api";
 
 const { Content } = Layout;
 
@@ -25,57 +23,20 @@ const Dashboard = () => {
     window.addEventListener("resize", handleResize);
   });
 
-  const [usersData, setUsersData] = useState<any[]>([]);
-
-  async function getUsers() {
-    try {
-      const data = await fetchJson("api/all-users");
-      setUsersData(data);
-    } catch (error: any) {
-      console.error("Error:", error.message);
-    }
-  }
-
   return (
     <Layout
       style={{ background: "white", height: "100dvh", overflow: "hidden" }}
     >
       <Sider isMobile={isMobile} />
       <Layout>
-        <Header isMobile={isMobile} />
+        <Header isMobile={isMobile} auth={auth} />
         <Content
           style={{
             padding: 24,
             margin: 0,
             minHeight: 280,
           }}
-        >
-          <Button onClick={() => auth.logOut()}>logout</Button>
-          <Button onClick={() => getUsers()}>
-            get all users (need Authorization)
-          </Button>
-          <div>
-            {usersData &&
-              usersData.map((obj, index) => (
-                <>
-                  <p key={index}>
-                    {Object.keys(obj).map((key, i) => (
-                      <>
-                        <span key={i}>
-                          <span className="text-[#FF0000]">{key}</span>:{" "}
-                          {obj[key]}
-                          {i !== Object.keys(obj).length - 1 ? ", " : ""}
-                        </span>
-                        <br></br>
-                      </>
-                    ))}
-                  </p>
-                  <br></br>
-                  <br></br>
-                </>
-              ))}
-          </div>
-        </Content>
+        ></Content>
       </Layout>
     </Layout>
   );
