@@ -1,25 +1,17 @@
 import { Input, Layout } from "antd";
-import ProfileNav from "../elements/ProfileNav";
-import { ReactNode } from "react";
-// import { useAuth } from "../hooks/AuthHooks";
+import DropdownPrimary from "../elements/DropdownPrimary";
+
 import {
   LogoutOutlined,
   SearchOutlined,
   SettingOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import { AuthContextType } from "../types/AuthContextType";
 
 export interface HeaderProps {
   isMobile: boolean;
   auth: AuthContextType;
-}
-
-export interface DropdownMenuItem {
-  label: string;
-  key: string;
-  disabled?: boolean;
-  icon?: ReactNode;
-  onClick?: (event: any) => void;
 }
 
 const Header = ({ isMobile, auth }: HeaderProps) => {
@@ -39,6 +31,12 @@ const Header = ({ isMobile, auth }: HeaderProps) => {
     },
   ];
 
+  const userIcon = (
+    <div className="w-10 h-10 flex rounded-full bg-[#F5F1F1] justify-center items-center">
+      <UserOutlined className="text-[22px]" />
+    </div>
+  );
+
   return (
     <Header
       className={`flex items-center justify-between bg-white gap-5 ${
@@ -50,7 +48,7 @@ const Header = ({ isMobile, auth }: HeaderProps) => {
         prefix={<SearchOutlined className="text-[20px]" />}
         style={{ width: "300px", borderRadius: 100 }}
       />
-      <ProfileNav items={profileDropdownItems} />
+      <DropdownPrimary items={profileDropdownItems} baseElement={userIcon} />
     </Header>
   );
 };

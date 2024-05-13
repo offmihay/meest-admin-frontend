@@ -1,5 +1,10 @@
 import React from "react";
-import { LaptopOutlined, NotificationOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  AppstoreOutlined,
+  CloseCircleOutlined,
+  PlusOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
 import { Layout, Menu, MenuProps } from "antd";
 
 export interface Props {
@@ -9,25 +14,30 @@ export interface Props {
 const Sider = ({ isMobile }: Props) => {
   const { Sider } = Layout;
 
-  const items: MenuProps["items"] = [UserOutlined, LaptopOutlined, NotificationOutlined].map(
-    (icon, index) => {
-      const key = String(index + 1);
-
-      return {
-        key: `sub${key}`,
-        icon: React.createElement(icon),
-        label: `subnav ${key}`,
-
-        children: new Array(4).fill(null).map((_, j) => {
-          const subKey = index * 4 + j + 1;
-          return {
-            key: subKey,
-            label: `option${subKey}`,
-          };
-        }),
-      };
-    }
-  );
+  const siderMenuData: MenuProps["items"] = [
+    {
+      key: "1",
+      icon: React.createElement(AppstoreOutlined),
+      label: "Управління брендами",
+      children: [
+        {
+          key: "sub1",
+          icon: React.createElement(PlusOutlined),
+          label: "Додати бренд",
+        },
+        {
+          key: "sub2",
+          icon: React.createElement(CloseCircleOutlined),
+          label: "Видалити бренд",
+        },
+        {
+          key: "sub3",
+          icon: React.createElement(SettingOutlined),
+          label: "Редагувати інформацію",
+        },
+      ],
+    },
+  ];
 
   return (
     <>
@@ -42,9 +52,7 @@ const Sider = ({ isMobile }: Props) => {
           <a href="#">
             {!isMobile ? (
               <img
-                src={`${
-                  import.meta.env.BASE_URL
-                }assets/images/admin-logo.png`}
+                src={`${import.meta.env.BASE_URL}assets/images/admin-logo.png`}
                 className="w-6/12"
                 alt=""
               />
@@ -61,7 +69,7 @@ const Sider = ({ isMobile }: Props) => {
         </div>
 
         <div className="h-[120px]"></div>
-        <Menu mode="inline" style={{ borderRight: 0 }} items={items} />
+        <Menu mode="inline" style={{ borderRight: 0 }} items={siderMenuData} />
       </Sider>
     </>
   );
