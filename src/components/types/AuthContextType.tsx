@@ -1,6 +1,6 @@
 export interface AuthContextType {
   token: string;
-  user: string;
-  loginAction: (userData: object) => Promise<void>;
+  userId: string;
+  login: (userData: object) => Promise<void>;
   logOut: () => void;
 }

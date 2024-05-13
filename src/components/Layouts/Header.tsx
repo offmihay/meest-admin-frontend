@@ -11,7 +11,7 @@ import { AuthContextType } from "../types/AuthContextType";
 
 export interface HeaderProps {
   isMobile: boolean;
-  auth: AuthContextType;
+  auth: AuthContextType | undefined;
 }
 
 const Header = ({ isMobile, auth }: HeaderProps) => {
@@ -27,7 +27,7 @@ const Header = ({ isMobile, auth }: HeaderProps) => {
       label: "Log Out",
       key: "1",
       icon: <LogoutOutlined />,
-      onClick: () => auth.logOut(),
+      onClick: () => auth?.logOut(),
     },
   ];
 

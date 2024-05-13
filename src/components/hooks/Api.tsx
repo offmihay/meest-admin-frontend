@@ -44,3 +44,25 @@ export async function postJson(url: string, payload: object): Promise<any> {
 
   return await response.json();
 }
+
+
+// export async function sendJson(req: {
+//   url: string;
+//   method: "GET" | "POST";
+//   urlParams?: Record<string, string>;
+//   payload?: object;
+// }): Promise<any> {
+//   //
+// }
+
+// export async function getJson(url: string, urlParams?: Record<string, string>) {
+//   return sendJson({ url, urlParams, method: "GET" });
+// }
+
+// export async function postJson2(
+//   url: string,
+//   payload?: object,
+//   urlParams?: Record<string, string>
+// ) {
+//   return sendJson({ url, urlParams, payload, method: "POST" });
+// }

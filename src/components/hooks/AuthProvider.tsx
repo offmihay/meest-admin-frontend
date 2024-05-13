@@ -1,6 +1,6 @@
 // authProvider.tsx
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { postJson } from "./Api";
 import AuthContext from "./AuthContext";
 import { AuthContextType } from "../types/AuthContextType";
@@ -10,24 +10,35 @@ interface AuthProviderProps {
 }
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<string>(
-    localStorage.getItem("userID") || ""
+  const [userId, setUserId] = useState<string>(
+    localStorage.getItem("userId") || ""
   );
+
   const [token, setToken] = useState<string>(
     localStorage.getItem("token") || ""
   );
-  const navigate = useNavigate();
 
-  const loginAction = async (userData: object) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const localStorageToken = localStorage.getItem("token") || "";
+    const localStorageUserId = localStorage.getItem("userId") || "";
+    if (localStorageToken !== token || localStorageUserId !== userId) {
+      setToken(localStorageToken);
+      setUserId(localStorageUserId);
+    }
+  }, [token, userId, location.pathname]);
+
+  const login = async (userData: object) => {
     try {
       const response = await postJson("api/login", userData);
       if (response.userData) {
-        setUser(response.userData.userID);
-        setToken(response.userData.token);
-        localStorage.setItem("userID", response.userData.userID);
+        localStorage.setItem("userId", response.userData.userId);
         localStorage.setItem("token", response.userData.token);
-        navigate("meest-admin/dashboard");
-        return;
+        setUserId(response.userData.userId);
+        setToken(response.userData.token);
+        navigate("dashboard");
       }
     } catch (error: any) {
       alert("Username or password is not valid!");
@@ -35,17 +46,17 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const logOut = () => {
-    setUser("");
-    setToken("");
-    localStorage.removeItem("userID");
+    localStorage.removeItem("userId");
     localStorage.removeItem("token");
-    navigate("meest-admin/login");
+    setUserId("");
+    setToken("");
+    navigate("login");
   };
 
   const authContextValue: AuthContextType = {
     token,
-    user,
-    loginAction,
+    userId,
+    login,
     logOut,
   };
 

@@ -1,6 +1,6 @@
 import { Button } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, SyntheticEvent } from "react";
 import { useAuth } from "../hooks/AuthHooks";
 
 const Login = () => {
@@ -18,16 +18,18 @@ const Login = () => {
   };
 
   const auth = useAuth();
-  const handleSubmitEvent = () => {
+  const handleSubmit = (e: SyntheticEvent) => {
+    e.preventDefault();
+
     if (input.username !== "" && input.password !== "") {
-      auth.loginAction(input);
+      auth?.login(input);
       return;
     }
     alert("please provide a valid input");
   };
 
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <div className="bg-adminlogin flex flex-col px-6">
         <div className="m-auto relative">
           <div className="max-w-[670px] h-[500px] md:h-[450px] text-mainblue m-auto flex flex-col md:flex-row relative rounded-3xl overflow-hidden shadow-box">
@@ -97,9 +99,10 @@ const Login = () => {
           <div className="left-0 bottom-[-70px] absolute flex justify-center w-full">
             <Button
               type="primary"
+              htmlType="submit"
               shape="round"
               size={"large"}
-              onClick={handleSubmitEvent}
+              onClick={handleSubmit}
             >
               Log In
             </Button>

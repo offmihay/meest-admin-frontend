@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
-
 import { Layout } from "antd";
-import Header from "../layouts/Header";
-import Sider from "../layouts/Sider";
+import Header from "./Header";
+import Sider from "./Sider";
 import { useAuth } from "../hooks/AuthHooks";
+import { Route, Routes } from "react-router-dom";
+import Dashboard from "../pages/content-pages/Dashboard";
+import Brands from "../pages/content-pages/Brands";
 
 const { Content } = Layout;
 
-const Dashboard = () => {
+const HomepageLayout = () => {
   const auth = useAuth();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
@@ -36,10 +38,15 @@ const Dashboard = () => {
             margin: 0,
             minHeight: 280,
           }}
-        ></Content>
+        >
+          <Routes>
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="brands" element={<Brands />} />
+          </Routes>
+        </Content>
       </Layout>
     </Layout>
   );
 };
 
-export default Dashboard;
+export default HomepageLayout;
