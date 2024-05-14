@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   ApartmentOutlined,
   AppstoreOutlined,
@@ -20,12 +20,24 @@ const Sider = ({ isMobile }: Props) => {
   const { Sider } = Layout;
   const navigate = useNavigate();
 
+  const [activeKey, setActiveKey] = useState<string>(
+    localStorage.getItem("siderMenuActiveKey") || "1"
+  );
+
+  const handleSetActiveKey = (key: string) => {
+    setActiveKey(key);
+    localStorage.setItem("siderMenuActiveKey", key);
+  };
+
   const siderMenuData: MenuProps["items"] = [
     {
       key: "1",
       icon: React.createElement(LineChartOutlined),
       label: "Головна",
-      onClick: () => navigate("/dashboard"),
+      onClick: () => {
+        handleSetActiveKey("1");
+        navigate("/dashboard");
+      },
     },
     {
       key: "2",
@@ -36,17 +48,27 @@ const Sider = ({ isMobile }: Props) => {
           key: "sub1",
           icon: React.createElement(PlusOutlined),
           label: "Додати бренд",
-          onClick: () => navigate("/brands"),
+          onClick: () => {
+            navigate("/brands");
+            handleSetActiveKey("sub1");
+          },
         },
         {
           key: "sub2",
           icon: React.createElement(CloseCircleOutlined),
           label: "Видалити бренд",
+          onClick: () => {
+            navigate("/brands");
+            handleSetActiveKey("sub2");
+          },
         },
         {
           key: "sub3",
           icon: React.createElement(SettingOutlined),
           label: "Редагувати інформацію",
+          onClick: () => {
+            handleSetActiveKey("sub3");
+          },
         },
       ],
     },
@@ -59,16 +81,25 @@ const Sider = ({ isMobile }: Props) => {
           key: "sub4",
           icon: React.createElement(ApartmentOutlined),
           label: "data",
+          onClick: () => {
+            handleSetActiveKey("sub4");
+          },
         },
         {
           key: "sub5",
           icon: React.createElement(AppstoreOutlined),
           label: "data",
+          onClick: () => {
+            handleSetActiveKey("sub5");
+          },
         },
         {
           key: "sub6",
           icon: React.createElement(SettingOutlined),
           label: "data",
+          onClick: () => {
+            handleSetActiveKey("sub6");
+          },
         },
       ],
     },
@@ -81,16 +112,25 @@ const Sider = ({ isMobile }: Props) => {
           key: "sub7",
           icon: React.createElement(ApartmentOutlined),
           label: "data",
+          onClick: () => {
+            handleSetActiveKey("sub7");
+          },
         },
         {
           key: "sub8",
           icon: React.createElement(AppstoreOutlined),
           label: "data",
+          onClick: () => {
+            handleSetActiveKey("sub8");
+          },
         },
         {
           key: "sub9",
           icon: React.createElement(SettingOutlined),
           label: "data",
+          onClick: () => {
+            handleSetActiveKey("sub9");
+          },
         },
       ],
     },
@@ -130,7 +170,7 @@ const Sider = ({ isMobile }: Props) => {
           mode="inline"
           style={{ borderRight: 0 }}
           items={siderMenuData}
-          selectedKeys={["1"]}
+          selectedKeys={[activeKey]}
         />
       </Sider>
     </>
