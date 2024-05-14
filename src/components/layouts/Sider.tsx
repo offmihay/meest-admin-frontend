@@ -82,6 +82,7 @@ const Sider = ({ isMobile }: Props) => {
           icon: React.createElement(ApartmentOutlined),
           label: "data",
           onClick: () => {
+            navigate("/size-tables");
             handleSetActiveKey("sub4");
           },
         },

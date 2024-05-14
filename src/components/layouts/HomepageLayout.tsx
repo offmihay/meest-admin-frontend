@@ -6,6 +6,7 @@ import { useAuth } from "../hooks/AuthHooks";
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "../pages/content-pages/Dashboard";
 import Brands from "../pages/content-pages/Brands";
+import SizeTables from "../pages/content-pages/SizeTables";
 
 const { Content } = Layout;
 
@@ -42,6 +43,7 @@ const HomepageLayout = () => {
           <Routes>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="brands" element={<Brands />} />
+            <Route path="size-tables" element={<SizeTables />} />
           </Routes>
         </Content>
       </Layout>
