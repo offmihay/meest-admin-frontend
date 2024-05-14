@@ -16,7 +16,7 @@ const Brands: React.FC = () => {
 
   return (
     <>
-      <Button onClick={fetchData}>Show brands</Button>
+      <Button onClick={fetchData}>Show users</Button>
       {dataObj && (
         <div className="flex gap-4 flex-wrap m-8">
           {dataObj.map((item, index) => (
