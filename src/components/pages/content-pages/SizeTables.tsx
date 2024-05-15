@@ -22,17 +22,17 @@ const SizeTables = () => {
   const [clothByBrand, setClothByBrand] = useState<Cloth[]>([]);
 
   const handleGenderChange = (value: string) => {
+    setBrandsByGender([]);
+    setClothByBrand([]);
     setSelectedGender(value);
     setSelectedBrand("none");
     setSelectedCloth("none");
-    setBrandsByGender([]);
-    setClothByBrand([]);
   };
 
   const handleBrandChange = (value: string) => {
+    setClothByBrand([]);
     setSelectedBrand(value);
     setSelectedCloth("none");
-    setClothByBrand([]);
   };
 
   const handleClothChange = (value: string) => {
