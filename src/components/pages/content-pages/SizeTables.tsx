@@ -1,28 +1,16 @@
 import { Select } from "antd";
 import { useEffect, useState } from "react";
 import { fetchJson } from "../../hooks/Api";
-
-interface Brand {
-  id: number;
-  name: string;
-  key: string;
-}
-
-interface Cloth {
-  id: number;
-  name: string;
-  key: string;
-}
+import { useBrandsQuery } from "../../hooks/useBrandsQuery";
+import { Cloth } from "../../types/Cloth";
 
 const SizeTables = () => {
   const [selectedGender, setSelectedGender] = useState("none");
   const [selectedBrand, setSelectedBrand] = useState("none");
   const [selectedCloth, setSelectedCloth] = useState("none");
-  const [brandsByGender, setBrandsByGender] = useState<Brand[]>([]);
   const [clothByBrand, setClothByBrand] = useState<Cloth[]>([]);
 
   const handleGenderChange = (value: string) => {
-    setBrandsByGender([]);
     setClothByBrand([]);
     setSelectedGender(value);
     setSelectedBrand("none");
@@ -39,14 +27,8 @@ const SizeTables = () => {
     setSelectedCloth(value);
   };
 
-  useEffect(() => {
-    selectedGender != "none" &&
-      fetchJson(`api/brands?gender=${selectedGender}`)
-        .then((data) => setBrandsByGender(data))
-        .catch((err) => {
-          console.error(err);
-        });
-  }, [selectedGender]);
+  const brandsQuery = useBrandsQuery(selectedGender);
+  const brandsByGender = brandsQuery.data;
 
   useEffect(() => {
     selectedBrand != "none" &&
@@ -72,12 +54,12 @@ const SizeTables = () => {
       />
       <Select
         defaultValue="none"
-        disabled={brandsByGender.length == 0}
+        disabled={brandsByGender.length == 0 || brandsQuery.isFetching}
         style={{ width: 150 }}
         value={selectedBrand}
         onChange={handleBrandChange}
         options={[
-          { value: "none", label: "Бренд" },
+          { value: "none", label: "-- Виберіть бренд --" },
           ...brandsByGender.map((brand) => ({
             value: brand.key,
             label: brand.name,
@@ -91,7 +73,7 @@ const SizeTables = () => {
         value={selectedCloth}
         onChange={handleClothChange}
         options={[
-          { value: "none", label: "Одяг" },
+          { value: "none", label: "-- Виберіть тип одягу --" },
           ...clothByBrand.map((brand) => ({
             value: brand.key,
             label: brand.name,

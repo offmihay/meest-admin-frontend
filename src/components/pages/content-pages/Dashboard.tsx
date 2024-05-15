@@ -1,5 +1,11 @@
+import { useBrandsQuery } from "../../hooks/useBrandsQuery";
+
 const Dashboard = () => {
-  return <h1>Hello world</h1>;
+  const selectedGender = "male";
+
+  const brandsQuery = useBrandsQuery(selectedGender);
+
+  return <h1>{JSON.stringify(brandsQuery.data)}</h1>;
 };
 
 export default Dashboard;
