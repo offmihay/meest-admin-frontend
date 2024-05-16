@@ -1,5 +1,5 @@
 import { Input, Layout } from "antd";
-import DropdownPrimary from "../elements/DropdownPrimary";
+import DropdownPrimary from "../components/DropdownPrimary";
 
 import {
   LogoutOutlined,
@@ -7,7 +7,7 @@ import {
   SettingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { AuthContextType } from "../types/AuthContextType";
+import { AuthContextType } from "../utils/types/AuthContextType";
 
 export interface HeaderProps {
   isMobile: boolean;

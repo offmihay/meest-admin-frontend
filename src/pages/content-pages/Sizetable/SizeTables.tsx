@@ -1,8 +1,8 @@
 import { Select } from "antd";
 import { useEffect, useState } from "react";
-import { fetchJson } from "../../../hooks/Api";
+import { fetchJson } from "../../../api/Api";
 import { useBrandsQuery } from "../../../hooks/useBrandsQuery";
-import { Cloth } from "../../types/Cloth";
+import { Cloth } from "../../../utils/types/Cloth";
 
 const SizeTables = () => {
   const [selectedGender, setSelectedGender] = useState("none");

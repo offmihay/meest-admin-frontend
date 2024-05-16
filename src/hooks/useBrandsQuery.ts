@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchJson } from "./Api";
-import { Brand } from "../components/types/Brand";
+import { fetchJson } from "../api/Api";
+import { Brand } from "../utils/types/Brand";
 
 export const useBrandsQuery = (selectedGender: string) => {
   return useQuery({
@@ -11,6 +11,5 @@ export const useBrandsQuery = (selectedGender: string) => {
     enabled: selectedGender != "none",
     refetchOnWindowFocus: false,
     retry: 0,
-    staleTime: 60000,
   });
 };

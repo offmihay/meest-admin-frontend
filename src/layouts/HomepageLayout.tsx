@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { Layout } from "antd";
 import Header from "./Header";
 import Sider from "./Sider";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../hooks/useAuth";
 import { Route, Routes } from "react-router-dom";
-import Dashboard from "../pages/content-pages/Dashboard";
-import Brands from "../pages/content-pages/Brands";
-import SizeTables from "../pages/content-pages/SizeTables";
+import Dashboard from "../pages/content-pages/Dashboard/Dashboard";
+import Brands from "../pages/content-pages/Brands/Brands";
+import SizeTables from "../pages/content-pages/Sizetable/SizeTables";
 
 const { Content } = Layout;
 

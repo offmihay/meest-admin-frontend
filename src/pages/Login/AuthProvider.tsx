@@ -1,9 +1,9 @@
 // authProvider.tsx
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { postJson } from "./Api";
-import AuthContext from "./AuthContext";
-import { AuthContextType } from "../components/types/AuthContextType";
+import { postJson } from "../../api/Api";
+import AuthContext from "../../context/AuthContext";
+import { AuthContextType } from "../../utils/types/AuthContextType";
 
 interface AuthProviderProps {
   children: React.ReactNode;
