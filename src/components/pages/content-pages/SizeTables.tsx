@@ -1,7 +1,7 @@
 import { Select } from "antd";
 import { useEffect, useState } from "react";
-import { fetchJson } from "../../hooks/Api";
-import { useBrandsQuery } from "../../hooks/useBrandsQuery";
+import { fetchJson } from "../../../hooks/Api";
+import { useBrandsQuery } from "../../../hooks/useBrandsQuery";
 import { Cloth } from "../../types/Cloth";
 
 const SizeTables = () => {
@@ -43,10 +43,10 @@ const SizeTables = () => {
     <>
       <Select
         defaultValue="none"
-        style={{ width: 150 }}
+        style={{ width: 200 }}
         onChange={handleGenderChange}
         options={[
-          { value: "none", label: "Стать" },
+          { value: "none", label: "-- Виберіть стать --" },
           { value: "male", label: "Men" },
           { value: "female", label: "Women" },
           { value: "child", label: "Children" },
@@ -55,7 +55,7 @@ const SizeTables = () => {
       <Select
         defaultValue="none"
         disabled={brandsByGender.length == 0 || brandsQuery.isFetching}
-        style={{ width: 150 }}
+        style={{ width: 200 }}
         value={selectedBrand}
         onChange={handleBrandChange}
         options={[
@@ -69,7 +69,7 @@ const SizeTables = () => {
       <Select
         defaultValue="none"
         disabled={brandsByGender.length == 0 || clothByBrand.length == 0}
-        style={{ width: 150 }}
+        style={{ width: 200 }}
         value={selectedCloth}
         onChange={handleClothChange}
         options={[

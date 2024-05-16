@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import AppRoutes from "./AppRoutes";
-import AuthProvider from "./components/hooks/AuthProvider";
+import AppRoutes from "./components/routes/AppRoutes";
+import AuthProvider from "./hooks/AuthProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 

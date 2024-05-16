@@ -1,4 +1,4 @@
-import { useBrandsQuery } from "../../hooks/useBrandsQuery";
+import { useBrandsQuery } from "../../../hooks/useBrandsQuery";
 
 const Dashboard = () => {
   const selectedGender = "male";

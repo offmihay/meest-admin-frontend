@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { postJson } from "./Api";
 import AuthContext from "./AuthContext";
-import { AuthContextType } from "../types/AuthContextType";
+import { AuthContextType } from "../components/types/AuthContextType";
 
 interface AuthProviderProps {
   children: React.ReactNode;

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Layout } from "antd";
 import Header from "./Header";
 import Sider from "./Sider";
-import { useAuth } from "../hooks/AuthHooks";
+import { useAuth } from "../../hooks/useAuth";
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "../pages/content-pages/Dashboard";
 import Brands from "../pages/content-pages/Brands";

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { fetchJson } from "../../hooks/Api";
+import { fetchJson } from "../../../hooks/Api";
 import { Button } from "antd";
 
 const Brands: React.FC = () => {

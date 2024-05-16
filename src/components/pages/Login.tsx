@@ -1,7 +1,7 @@
 import { Button } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { useState, ChangeEvent, SyntheticEvent } from "react";
-import { useAuth } from "../hooks/AuthHooks";
+import { useAuth } from "../../hooks/useAuth";
 
 const Login = () => {
   const [input, setInput] = useState({
