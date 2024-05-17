@@ -141,17 +141,22 @@ const Sider = ({ isMobile }: Props) => {
     <>
       <Sider
         width={300}
-        className="!bg-white shadow-xl relative sider"
+        className="!bg-white shadow-xl relative"
         trigger={null}
-        collapsible
-        collapsed={isMobile}
+        style={{
+          height: "100dvh",
+          position: "fixed",
+          left: 0,
+          top: 0,
+          bottom: 0,
+        }}
       >
-        <div className="absolute top-0 w-full m-3 p-2">
+        <div className="absolute top-0 w-full p-6">
           <a href="#">
             {!isMobile ? (
               <img
                 src={`${import.meta.env.BASE_URL}assets/images/admin-logo.png`}
-                className="w-6/12"
+                className="w-7/12"
                 alt=""
               />
             ) : (

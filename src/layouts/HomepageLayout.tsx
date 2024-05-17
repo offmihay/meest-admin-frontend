@@ -27,16 +27,14 @@ const HomepageLayout = () => {
   });
 
   return (
-    <Layout
-      style={{ background: "white", height: "100dvh", overflow: "hidden" }}
-    >
+    <Layout hasSider style={{ background: "white" }}>
       <Sider isMobile={isMobile} />
-      <Layout>
+      <Layout style={{ marginLeft: 300 }}>
         <Header isMobile={isMobile} auth={auth} />
         <Content
           style={{
             padding: 24,
-            margin: 0,
+            marginTop: 64,
             minHeight: 280,
           }}
         >

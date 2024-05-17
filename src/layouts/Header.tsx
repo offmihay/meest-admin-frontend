@@ -42,6 +42,7 @@ const Header = ({ isMobile, auth }: HeaderProps) => {
       className={`flex items-center justify-between bg-white gap-5 ${
         isMobile ? "!px-4" : ""
       }`}
+      style={{ position: "fixed", width: "calc(100% - 300px)" }}
     >
       <Input
         placeholder="Пошук"
