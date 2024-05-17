@@ -13,6 +13,7 @@ const { Content } = Layout;
 const HomepageLayout = () => {
   const auth = useAuth();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   const handleResize = () => {
     if (window.innerWidth < 768) {
@@ -28,13 +29,20 @@ const HomepageLayout = () => {
 
   return (
     <Layout hasSider style={{ background: "white" }}>
-      <Sider isMobile={isMobile} />
-      <Layout style={{ marginLeft: 300 }}>
-        <Header isMobile={isMobile} auth={auth} />
+      <Sider
+        isMobile={isMobile}
+        isCollapsed={isCollapsed}
+        setIsCollapsed={() => setIsCollapsed(!isCollapsed)}
+      />
+      <Layout style={{ marginLeft: isMobile ? 0 : 300 }}>
+        <Header
+          isMobile={isMobile}
+          auth={auth}
+          setIsCollapsed={() => setIsCollapsed(!isCollapsed)}
+        />
         <Content
           style={{
             padding: 24,
-            marginTop: 64,
             minHeight: 280,
           }}
         >

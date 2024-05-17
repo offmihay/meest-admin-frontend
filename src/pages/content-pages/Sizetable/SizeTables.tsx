@@ -82,7 +82,7 @@ const SizeTables = () => {
           ]}
         />
       </Flex>
-      {/* <EditableTable data={data} setData={setData} /> */}
+      <EditableTable data={data} setData={setData} />
     </>
   );
 };

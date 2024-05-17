@@ -1,5 +1,5 @@
-//const BASE_URL: string = "https://meest-back-e18db4f449d7.herokuapp.com";
-const BASE_URL: string = "http://localhost:3000";
+const BASE_URL: string = "https://meest-back-e18db4f449d7.herokuapp.com";
+// const BASE_URL: string = "http://localhost:3000";
 
 export async function fetchJson(url: string): Promise<any> {
   const headers: Record<string, string> = {

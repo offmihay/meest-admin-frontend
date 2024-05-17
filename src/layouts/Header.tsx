@@ -1,8 +1,9 @@
-import { Input, Layout } from "antd";
+import { Button, Input, Layout } from "antd";
 import DropdownPrimary from "../components/DropdownPrimary";
 
 import {
   LogoutOutlined,
+  MenuOutlined,
   SearchOutlined,
   SettingOutlined,
   UserOutlined,
@@ -12,9 +13,10 @@ import { AuthContextType } from "../utils/types/AuthContextType";
 export interface HeaderProps {
   isMobile: boolean;
   auth: AuthContextType | undefined;
+  setIsCollapsed: () => void;
 }
 
-const Header = ({ isMobile, auth }: HeaderProps) => {
+const Header = ({ isMobile, auth, setIsCollapsed }: HeaderProps) => {
   const { Header } = Layout;
 
   const profileDropdownItems = [
@@ -42,8 +44,27 @@ const Header = ({ isMobile, auth }: HeaderProps) => {
       className={`flex items-center justify-between bg-white gap-5 ${
         isMobile ? "!px-4" : ""
       }`}
-      style={{ position: "fixed", width: "calc(100% - 300px)" }}
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 1,
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+      }}
     >
+      {isMobile && (
+        <Button
+          type="text"
+          icon={<MenuOutlined />}
+          onClick={setIsCollapsed}
+          style={{
+            fontSize: "16px",
+            width: 64,
+            height: 64,
+          }}
+        />
+      )}
       <Input
         placeholder="Пошук"
         prefix={<SearchOutlined className="text-[20px]" />}
