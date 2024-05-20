@@ -1,14 +1,8 @@
 import React, { useState } from "react";
 import {
-  ApartmentOutlined,
-  AppstoreOutlined,
-  CloseCircleOutlined,
   CloseOutlined,
-  CloseSquareOutlined,
   CompassOutlined,
   LineChartOutlined,
-  PlusOutlined,
-  SettingOutlined,
   TableOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, MenuProps, Button } from "antd";
@@ -51,34 +45,6 @@ const Sider = ({ isMobile, isCollapsed, setIsCollapsed }: Props) => {
         navigate("/brands");
         handleSetActiveKey("2");
       },
-      // children: [
-      //   {
-      //     key: "sub1",
-      //     icon: React.createElement(PlusOutlined),
-      //     label: "Додати бренд",
-      //     onClick: () => {
-      //       navigate("/brands");
-      //       handleSetActiveKey("sub1");
-      //     },
-      //   },
-      //   {
-      //     key: "sub2",
-      //     icon: React.createElement(CloseCircleOutlined),
-      //     label: "Видалити бренд",
-      //     onClick: () => {
-      //       navigate("/brands");
-      //       handleSetActiveKey("sub2");
-      //     },
-      //   },
-      //   {
-      //     key: "sub3",
-      //     icon: React.createElement(SettingOutlined),
-      //     label: "Редагувати інформацію",
-      //     onClick: () => {
-      //       handleSetActiveKey("sub3");
-      //     },
-      //   },
-      // ],
     },
     {
       key: "3",
@@ -88,33 +54,6 @@ const Sider = ({ isMobile, isCollapsed, setIsCollapsed }: Props) => {
         navigate("/size-tables");
         handleSetActiveKey("3");
       },
-      // children: [
-      //   {
-      //     key: "sub4",
-      //     icon: React.createElement(ApartmentOutlined),
-      //     label: "data",
-      //     onClick: () => {
-      //       navigate("/size-tables");
-      //       handleSetActiveKey("sub4");
-      //     },
-      //   },
-      //   {
-      //     key: "sub5",
-      //     icon: React.createElement(AppstoreOutlined),
-      //     label: "data",
-      //     onClick: () => {
-      //       handleSetActiveKey("sub5");
-      //     },
-      //   },
-      //   {
-      //     key: "sub6",
-      //     icon: React.createElement(SettingOutlined),
-      //     label: "data",
-      //     onClick: () => {
-      //       handleSetActiveKey("sub6");
-      //     },
-      //   },
-      // ],
     },
     {
       key: "4",
@@ -123,32 +62,6 @@ const Sider = ({ isMobile, isCollapsed, setIsCollapsed }: Props) => {
       onClick: () => {
         handleSetActiveKey("4");
       },
-      // children: [
-      //   {
-      //     key: "sub7",
-      //     icon: React.createElement(ApartmentOutlined),
-      //     label: "data",
-      //     onClick: () => {
-      //       handleSetActiveKey("sub7");
-      //     },
-      //   },
-      //   {
-      //     key: "sub8",
-      //     icon: React.createElement(AppstoreOutlined),
-      //     label: "data",
-      //     onClick: () => {
-      //       handleSetActiveKey("sub8");
-      //     },
-      //   },
-      //   {
-      //     key: "sub9",
-      //     icon: React.createElement(SettingOutlined),
-      //     label: "data",
-      //     onClick: () => {
-      //       handleSetActiveKey("sub9");
-      //     },
-      //   },
-      // ],
     },
   ];
 
