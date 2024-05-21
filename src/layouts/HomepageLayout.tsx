@@ -28,7 +28,7 @@ const HomepageLayout = () => {
   });
 
   return (
-    <Layout hasSider style={{ background: "white" }}>
+    <Layout hasSider style={{ background: "white", minHeight: "100vh" }}>
       <Sider
         isMobile={isMobile}
         isCollapsed={isCollapsed}
@@ -42,7 +42,7 @@ const HomepageLayout = () => {
         />
         <Content
           style={{
-            padding: 24,
+            padding: isMobile ? 10 : 24,
             minHeight: 280,
           }}
         >
