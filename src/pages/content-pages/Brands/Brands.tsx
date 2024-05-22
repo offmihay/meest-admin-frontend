@@ -152,7 +152,7 @@ const Brands: React.FC = () => {
                     }))
                   : []
               }
-              initialvalue={
+              defaultValue={
                 allClothesQuery.data && allClothesQuery.data.length > 0
                   ? allClothesQuery.data[0].exist_clothes.men
                   : []
@@ -173,7 +173,7 @@ const Brands: React.FC = () => {
                     }))
                   : []
               }
-              initialvalue={
+              defaultValue={
                 allClothesQuery.data && allClothesQuery.data.length > 0
                   ? allClothesQuery.data[0].exist_clothes.women
                   : []
@@ -194,7 +194,7 @@ const Brands: React.FC = () => {
                     }))
                   : []
               }
-              initialvalue={
+              defaultValue={
                 allClothesQuery.data && allClothesQuery.data.length > 0
                   ? allClothesQuery.data[0].exist_clothes.child
                   : []
