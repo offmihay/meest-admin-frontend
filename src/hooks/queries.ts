@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchJson } from "../../../api/Api";
-import { Brand } from "../../../utils/types/Brand";
-import { Cloth } from "../../../utils/types/Cloth";
-import { TableData } from "../../../utils/types/TableData";
+import { fetchJson } from "../api/Api";
+import { Brand } from "../utils/types/Brand";
+import { Cloth } from "../utils/types/Cloth";
+import { TableData } from "../utils/types/TableData";
 
 export const useBrandsQuery = (selectedGender: string) => {
   return useQuery({
@@ -59,6 +59,34 @@ export const useTableDataQuery = (
       possibleSizeValues: [],
       isEmpty: true,
     },
+    refetchOnWindowFocus: false,
+    retry: 0,
+  });
+};
+
+export const useAllBrandsQuery = () => {
+  return useQuery({
+    queryKey: ["all-brands"],
+    queryFn: (): Promise<Brand[]> => fetchJson(`api/all-brands`),
+    initialData: [],
+    refetchOnWindowFocus: false,
+    retry: 0,
+  });
+};
+
+export const useAllClothesQuery = (brandKey: string | undefined) => {
+  return useQuery({
+    queryKey: ["exist-clothes", brandKey],
+    queryFn: () => fetchJson(`api/clothes-existing?brand=${brandKey}`),
+    initialData: {
+      all_clothes: [],
+      exist_clothes: {
+        men: [],
+        women: [],
+        child: [],
+      },
+    },
+    enabled: !!brandKey,
     refetchOnWindowFocus: false,
     retry: 0,
   });

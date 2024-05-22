@@ -40,7 +40,7 @@ const Sider = ({ isMobile, isCollapsed, setIsCollapsed }: Props) => {
     {
       key: "2",
       icon: React.createElement(CompassOutlined),
-      label: "Управління брендами",
+      label: "Бренди & Одяг",
       onClick: () => {
         navigate("/brands");
         handleSetActiveKey("2");

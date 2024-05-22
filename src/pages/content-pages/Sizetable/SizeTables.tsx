@@ -1,11 +1,15 @@
 import { Button, Space, Select, Divider, notification } from "antd";
 import { useState, useEffect } from "react";
-import { useBrandsQuery, useClothesQuery, useTableDataQuery } from "./queries";
 import EditableTable from "../../../components/EditableTable";
 import { RocketOutlined, SearchOutlined } from "@ant-design/icons";
 import { TableData } from "../../../utils/types/TableData";
 import Title from "antd/es/typography/Title";
 import { postJson } from "../../../api/Api";
+import {
+  useBrandsQuery,
+  useClothesQuery,
+  useTableDataQuery,
+} from "../../../hooks/queries";
 
 type TableDataWithKey = TableData & { key: string };
 
