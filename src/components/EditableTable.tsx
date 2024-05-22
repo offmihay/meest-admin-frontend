@@ -12,7 +12,6 @@ import {
   Checkbox,
 } from "antd";
 import {
-  QuestionCircleOutlined,
   EditOutlined,
   DeleteOutlined,
   SaveOutlined,
@@ -108,8 +107,12 @@ const EditableTable: React.FC<{
   const [form] = Form.useForm();
   const [editingKey, setEditingKey] = useState<string>("");
   const [newRecordKeys, setNewRecordKeys] = useState<Set<string>>(new Set());
-  const [visibleColumns, setVisibleColumns] = useState<Set<string>>(
-    new Set(
+  const [visibleColumns, setVisibleColumns] = useState<Set<string>>(() => {
+    const storedColumns = localStorage.getItem("visibleColumns");
+    if (storedColumns) {
+      return new Set(JSON.parse(storedColumns));
+    }
+    return new Set(
       [
         "height",
         "head_length",
@@ -123,8 +126,8 @@ const EditableTable: React.FC<{
       ].filter((col) =>
         data.some((item) => item[col] !== null && item[col] !== "")
       )
-    )
-  );
+    );
+  });
 
   const isEditing = (record: TableDataWithKey) => record.key === editingKey;
 
@@ -223,7 +226,7 @@ const EditableTable: React.FC<{
   };
 
   const handleColumnVisibilityChange = (key: string, checked: boolean) => {
-    if (key === "size_value" || key === "operation") return; // Нельзя скрывать колонки size_value и operation
+    if (key === "size_value" || key === "operation") return;
     const newVisibleColumns = new Set(visibleColumns);
     if (checked) {
       newVisibleColumns.add(key);
@@ -231,27 +234,78 @@ const EditableTable: React.FC<{
       newVisibleColumns.delete(key);
     }
     setVisibleColumns(newVisibleColumns);
+    localStorage.setItem(
+      "visibleColumns",
+      JSON.stringify([...newVisibleColumns])
+    );
+  };
+
+  const handleShowAllColumns = (checked: boolean) => {
+    const allColumns = new Set([
+      "height",
+      "head_length",
+      "chest_length",
+      "waist_length",
+      "hip_length",
+      "pants_length",
+      "foot_length",
+      "size_value",
+      "operation",
+    ]);
+
+    const newVisibleColumns = checked
+      ? allColumns
+      : new Set(
+          [
+            "height",
+            "head_length",
+            "chest_length",
+            "waist_length",
+            "hip_length",
+            "pants_length",
+            "foot_length",
+            "size_value",
+            "operation",
+          ].filter((col) =>
+            data.some((item) => item[col] !== null && item[col] !== "")
+          )
+        );
+    setVisibleColumns(newVisibleColumns);
+    localStorage.setItem(
+      "visibleColumns",
+      JSON.stringify([...newVisibleColumns])
+    );
   };
 
   const menuItems = [
-    "height",
-    "head_length",
-    "chest_length",
-    "waist_length",
-    "hip_length",
-    "pants_length",
-    "foot_length",
-  ].map((key) => ({
-    key,
-    label: (
-      <Checkbox
-        checked={visibleColumns.has(key)}
-        onChange={(e) => handleColumnVisibilityChange(key, e.target.checked)}
-      >
-        {key.replace("_", " ")}
-      </Checkbox>
-    ),
-  }));
+    ...[
+      "height",
+      "head_length",
+      "chest_length",
+      "waist_length",
+      "hip_length",
+      "pants_length",
+      "foot_length",
+    ].map((key) => ({
+      key,
+      label: (
+        <Checkbox
+          checked={visibleColumns.has(key)}
+          onChange={(e) => handleColumnVisibilityChange(key, e.target.checked)}
+        >
+          {key.replace("_", " ")}
+        </Checkbox>
+      ),
+    })),
+    {
+      key: "show_all",
+      label: (
+        <Checkbox onChange={(e) => handleShowAllColumns(e.target.checked)}>
+          <b>Show All</b>
+        </Checkbox>
+      ),
+    },
+  ];
 
   const columns = [
     {
@@ -303,81 +357,76 @@ const EditableTable: React.FC<{
       editable: true,
     },
     {
-      title: (
-        <span>
-          Operation{" "}
-          <Tooltip title="Хоча б один параметр має бути заповнений, окрім Size Value. Для Size Value допустимі значення: [XXS, XS, S, M, L, XL, XXL, XXXL] або числове значення">
-            <QuestionCircleOutlined />
-          </Tooltip>
-        </span>
-      ),
+      title: "Operation",
       dataIndex: "operation",
       width: "1%",
       render: (_: any, record: TableDataWithKey) => {
         const editable = isEditing(record);
         return editable ? (
-          <span style={{ display: "flex", gap: "8px" }}>
-            <Button
-              icon={<SaveOutlined />}
-              type="link"
-              onClick={() => save(record.key)}
+          <span>
+            <Tooltip title="Сохранить">
+              <Button
+                onClick={() => save(record.key)}
+                style={{ marginRight: 8 }}
+                icon={<SaveOutlined />}
+              />
+            </Tooltip>
+            <Popconfirm
+              title="Ви впевнені що хочете відмінити?"
+              onConfirm={cancel}
             >
-              Зберегти
-            </Button>
-            <Button
-              icon={<CloseOutlined />}
-              type="link"
-              onClick={cancel}
-              danger
-            >
-              Скасувати
-            </Button>
+              <Tooltip title="Відмінити">
+                <Button icon={<CloseOutlined />} />
+              </Tooltip>
+            </Popconfirm>
           </span>
         ) : (
-          <span style={{ display: "flex", gap: "8px" }}>
-            <Button
-              type="link"
-              icon={<EditOutlined />}
-              onClick={() => edit(record)}
-              disabled={editingKey !== ""}
-            >
-              Редагувати
-            </Button>
+          <span>
+            <Tooltip title="Редагувати">
+              <Button
+                disabled={editingKey !== ""}
+                onClick={() => edit(record)}
+                style={{ marginRight: 8 }}
+                icon={<EditOutlined />}
+              />
+            </Tooltip>
             <Popconfirm
-              title="Ви впевнені що хочете видалити цей рядок?"
+              title="Ви впевнені що хочете видалити?"
               onConfirm={() => deleteRow(record.key)}
-              okText="Так"
-              cancelText="Ні"
             >
-              <Button type="link" icon={<DeleteOutlined />} danger>
-                Видалити
-              </Button>
+              <Tooltip title="Видалити">
+                <Button
+                  disabled={editingKey !== ""}
+                  icon={<DeleteOutlined />}
+                />
+              </Tooltip>
             </Popconfirm>
           </span>
         );
       },
     },
-  ];
+  ].filter(
+    (col) => col.dataIndex === "operation" || visibleColumns.has(col.dataIndex)
+  );
 
-  const mergedColumns = columns
-    .filter((col) => visibleColumns.has(col.dataIndex))
-    .map((col) => {
-      if (!col.editable) {
-        return col;
-      }
-      return {
-        ...col,
-        onCell: (record: TableDataWithKey) => ({
-          record,
-          inputType: col.dataIndex === "size_value" ? "text" : "number",
-          dataIndex: col.dataIndex,
-          title: col.title,
-          editing: isEditing(record),
-          possibleSizeValues: possibleSizeValues,
-          selectedSizeSystem: selectedSizeSystem,
-        }),
-      };
-    });
+  const mergedColumns = columns.map((col) => {
+    if (!col.editable) {
+      return col;
+    }
+
+    return {
+      ...col,
+      onCell: (record: TableDataWithKey) => ({
+        record,
+        inputType: col.dataIndex === "size_value" ? "text" : "number",
+        dataIndex: col.dataIndex,
+        title: col.title,
+        editing: isEditing(record),
+        possibleSizeValues,
+        selectedSizeSystem,
+      }),
+    };
+  });
 
   return (
     <div>

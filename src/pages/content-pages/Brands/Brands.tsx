@@ -63,7 +63,6 @@ const Brands: React.FC = () => {
       });
     }
     allBrandsQuery.refetch();
-    allClothesQuery.refetch();
     setOpen(false);
     setSelectedBrand(null);
   };
