@@ -3,7 +3,7 @@ import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./utils/routes/AppRoutes";
 import AuthProvider from "./pages/Login/AuthProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const queryClient = new QueryClient();
 
@@ -13,7 +13,7 @@ const App: React.FC = () => {
       <AuthProvider>
         <QueryClientProvider client={queryClient}>
           <AppRoutes />
-          <ReactQueryDevtools initialIsOpen={false} />
+          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
         </QueryClientProvider>
       </AuthProvider>
     </BrowserRouter>

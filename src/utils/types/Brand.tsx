@@ -1,5 +1,5 @@
 export type Brand = {
-  id: number;
+  id: number | null;
   name: string;
   key: string;
   img_url: string;

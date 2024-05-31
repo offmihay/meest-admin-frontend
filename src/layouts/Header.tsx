@@ -9,15 +9,17 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { AuthContextType } from "../utils/types/AuthContextType";
+import useIsMobile from "../hooks/useIsMobile";
 
 export interface HeaderProps {
-  isMobile: boolean;
   auth: AuthContextType | undefined;
   setIsCollapsed: () => void;
 }
 
-const Header = ({ isMobile, auth, setIsCollapsed }: HeaderProps) => {
+const Header = ({ auth, setIsCollapsed }: HeaderProps) => {
   const { Header } = Layout;
+
+  const isMobile = useIsMobile();
 
   const profileDropdownItems = [
     {
@@ -41,9 +43,7 @@ const Header = ({ isMobile, auth, setIsCollapsed }: HeaderProps) => {
 
   return (
     <Header
-      className={`flex items-center justify-between bg-white gap-5 ${
-        isMobile ? "!px-4" : ""
-      }`}
+      className={`flex items-center justify-between bg-white gap-5 ${isMobile ? "!px-4" : ""}`}
       style={{
         position: "sticky",
         top: 0,

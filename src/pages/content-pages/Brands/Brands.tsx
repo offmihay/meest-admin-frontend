@@ -1,25 +1,43 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Modal, Select, Spin, Switch, notification } from "antd";
+import {
+  FloatButton,
+  Form,
+  Input,
+  Modal,
+  Select,
+  Skeleton,
+  Spin,
+  Switch,
+  notification,
+} from "antd";
 import { Brand } from "../../../utils/types/Brand";
-import { useAllBrandsQuery, useAllClothesQuery } from "../../../hooks/queries";
+import {
+  useAllBrandsQuery,
+  useAllClothesQuery,
+  useUpdateBrandsMutation,
+} from "../../../hooks/queries";
 import LogoCard from "../../../components/LogoCard";
 import _ from "lodash";
-import { postJson } from "../../../api/Api";
+import { FileAddOutlined } from "@ant-design/icons";
+import useIsMobile from "../../../hooks/useIsMobile";
+// import { postJson } from "../../../api/Api";
 
-const Brands: React.FC = () => {
+const Brands = () => {
   const [open, setOpen] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null);
   const [form] = Form.useForm();
+  const isMobile = useIsMobile();
 
   const allBrandsQuery = useAllBrandsQuery();
   const allClothesQuery = useAllClothesQuery(selectedBrand?.key);
+
+  const updateBrandsMutation = useUpdateBrandsMutation();
 
   useEffect(() => {
     if (open && allClothesQuery.data && allClothesQuery.data.length > 0 && selectedBrand) {
       const { men, women, child } = allClothesQuery.data[0].exist_clothes;
 
       form.setFieldsValue({
-        id: selectedBrand.id,
         key: selectedBrand.key,
         name: selectedBrand.name,
         men_clothes: men,
@@ -32,8 +50,17 @@ const Brands: React.FC = () => {
   }, [open, allClothesQuery.data, selectedBrand, form]);
 
   const handleEdit = (brand: Brand) => {
+    console.log(brand);
     setSelectedBrand(brand);
     setOpen(true);
+  };
+
+  const emptyBrand = {
+    id: null,
+    img_url: "",
+    is_active: false,
+    key: "",
+    name: "",
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,47 +73,45 @@ const Brands: React.FC = () => {
   const handleFormSubmit = async () => {
     try {
       const values = await form.validateFields();
-      await postJson("api/update-brands", values);
-      notification.success({
-        message: "Успішно",
-        description: "Данні успішно змінено!",
+      updateBrandsMutation.mutate(values, {
+        onSuccess: () => {
+          notification.success({
+            message: "Успішно",
+            description: "Данні успішно змінено!",
+          });
+          setOpen(false);
+          setSelectedBrand(null);
+        },
+        onError: (error) => {
+          notification.error({
+            message: "Помилка",
+            description: `Сталась помилка при завантаженні данних: ${error.message}`,
+          });
+        },
       });
-    } catch (error: any) {
-      console.error("Error:", error);
-      notification.error({
-        message: "Помилка",
-        description: `Сталась помилка при завантаженні данних: ${error.message}`,
-      });
+    } catch (error) {
+      console.error("Form validation error:", error);
     }
-    allBrandsQuery.refetch();
-    setOpen(false);
-    setSelectedBrand(null);
   };
-
-  if (allBrandsQuery.isLoading || (open && allClothesQuery.isLoading)) {
-    return <Spin />;
-  }
 
   return (
     <>
       <div className="flex flex-wrap gap-4 justify-center">
-        {allBrandsQuery.data
-          ?.sort((item: Brand) => item.id)
-          .map((item: Brand) => (
-            <LogoCard
-              key={item.id}
-              logoSrc={item.img_url}
-              companyName={item.key}
-              onEdit={() => handleEdit(item)}
-              onDelete={() => {}}
-            />
-          ))}
+        {allBrandsQuery.data?.map((item) => (
+          <LogoCard
+            key={item.id}
+            logoSrc={item.img_url}
+            companyName={item.key}
+            onEdit={() => handleEdit(item)}
+            onDelete={() => {}}
+          />
+        ))}
       </div>
 
       <Modal
         title="Редагувати інформацію про бренд"
         centered
-        wrapClassName="m-4"
+        wrapClassName="!top-2"
         open={open}
         onOk={handleFormSubmit}
         onCancel={() => {
@@ -95,13 +120,30 @@ const Brands: React.FC = () => {
         }}
         width={1000}
       >
-        <Spin spinning={allClothesQuery.isFetching || allBrandsQuery.isFetching}>
+        <Spin
+          spinning={
+            allClothesQuery.isFetching ||
+            allBrandsQuery.isFetching ||
+            updateBrandsMutation.isPending
+          }
+        >
+          <Skeleton
+            style={{ padding: 20 }}
+            active
+            paragraph={{ rows: 10 }}
+            round
+            loading={allClothesQuery.isFetching}
+          />
           <Form
             form={form}
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 14 }}
             layout="horizontal"
-            style={{ maxWidth: 600, marginTop: 40 }}
+            style={{
+              maxWidth: 600,
+              marginTop: 40,
+              display: allClothesQuery.isFetching ? "none" : "block", //for skeleton
+            }}
           >
             <Form.Item name="id" hidden>
               <Input />
@@ -223,6 +265,13 @@ const Brands: React.FC = () => {
           </Form>
         </Spin>
       </Modal>
+      <FloatButton
+        icon={<FileAddOutlined style={{ fontSize: 25 }} />}
+        shape="circle"
+        style={{ right: isMobile ? 30 : 100, bottom: isMobile ? 30 : 100, width: 60, height: 60 }}
+        className="flex justify-center items-center"
+        onClick={() => handleEdit(emptyBrand)}
+      />
     </>
   );
 };

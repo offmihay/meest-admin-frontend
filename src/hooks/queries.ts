@@ -1,8 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchJson } from "../api/Api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { fetchJson, postJson } from "../api/Api";
 import { Brand } from "../utils/types/Brand";
 import { Cloth } from "../utils/types/Cloth";
 import { TableData } from "../utils/types/TableData";
+import { BrandForm } from "../utils/types/BrandForm";
 
 export const useBrandsQuery = (selectedGender: string) => {
   return useQuery({
@@ -23,7 +24,7 @@ export const useClothesQuery = (selectedGender: string, selectedBrand: string) =
     initialData: [],
     enabled: selectedGender != "none" && selectedBrand != "none",
     refetchOnWindowFocus: false,
-    retry: 0,
+    retry: 3,
   });
 };
 
@@ -56,7 +57,7 @@ export const useTableDataQuery = (
       isEmpty: true,
     },
     refetchOnWindowFocus: false,
-    retry: 0,
+    retry: 3,
   });
 };
 
@@ -66,7 +67,7 @@ export const useAllBrandsQuery = () => {
     queryFn: (): Promise<Brand[]> => fetchJson(`api/all-brands`),
     initialData: [],
     refetchOnWindowFocus: false,
-    retry: 0,
+    retry: 3,
   });
 };
 
@@ -84,6 +85,12 @@ export const useAllClothesQuery = (brandKey: string | undefined) => {
     },
     enabled: !!brandKey,
     refetchOnWindowFocus: false,
-    retry: 0,
+  });
+};
+
+export const useUpdateBrandsMutation = () => {
+  return useMutation({
+    mutationKey: ["update-brands"],
+    mutationFn: (values: BrandForm) => postJson("api/update-brands", values),
   });
 };

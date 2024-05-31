@@ -7,16 +7,17 @@ import {
 } from "@ant-design/icons";
 import { Layout, Menu, MenuProps, Button } from "antd";
 import { useNavigate } from "react-router-dom";
+import useIsMobile from "../hooks/useIsMobile";
 
 export interface Props {
-  isMobile: boolean;
   isCollapsed: boolean;
   setIsCollapsed: () => void;
 }
 
-const Sider = ({ isMobile, isCollapsed, setIsCollapsed }: Props) => {
+const Sider = ({ isCollapsed, setIsCollapsed }: Props) => {
   const { Sider } = Layout;
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const [activeKey, setActiveKey] = useState<string>(
     localStorage.getItem("siderMenuActive") || "dashboard"

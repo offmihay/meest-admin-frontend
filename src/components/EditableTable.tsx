@@ -111,25 +111,13 @@ const EditableTable: React.FC<{
   const [form] = Form.useForm();
   const [editingKey, setEditingKey] = useState<string>("");
   const [newRecordKeys, setNewRecordKeys] = useState<Set<string>>(new Set());
+  const [showAll, setShowAll] = useState(() => {
+    const storedShowAll = localStorage.getItem("showAll");
+    return storedShowAll ? JSON.parse(storedShowAll) : false;
+  });
+
   const [visibleColumns, setVisibleColumns] = useState<Set<string>>(() => {
-    const storedColumns = localStorage.getItem("visibleColumns");
-    if (storedColumns) {
-      return new Set(JSON.parse(storedColumns));
-    }
-    if (data.length != 0) {
-      return new Set(
-        [
-          "height",
-          "head_length",
-          "chest_length",
-          "waist_length",
-          "hip_length",
-          "pants_length",
-          "foot_length",
-          "size_value",
-        ].filter((col) => data.some((item) => item[col] !== null && item[col] !== ""))
-      );
-    } else {
+    if (showAll || data.length == 0) {
       return new Set([
         "height",
         "head_length",
@@ -139,8 +127,21 @@ const EditableTable: React.FC<{
         "pants_length",
         "foot_length",
         "size_value",
+        "operation",
       ]);
     }
+    return new Set(
+      [
+        "height",
+        "head_length",
+        "chest_length",
+        "waist_length",
+        "hip_length",
+        "pants_length",
+        "foot_length",
+        "size_value",
+      ].filter((col) => data.some((item) => item[col] !== null && item[col] !== ""))
+    );
   });
 
   useEffect(() => {
@@ -258,25 +259,28 @@ const EditableTable: React.FC<{
       newVisibleColumns.delete(key);
     }
     setVisibleColumns(newVisibleColumns);
-    localStorage.setItem("visibleColumns", JSON.stringify([...newVisibleColumns]));
   };
 
   const handleShowAllColumns = (checked: boolean) => {
-    const allColumns = new Set([
-      "height",
-      "head_length",
-      "chest_length",
-      "waist_length",
-      "hip_length",
-      "pants_length",
-      "foot_length",
-      "size_value",
-      "operation",
-    ]);
-
-    const newVisibleColumns = checked
-      ? allColumns
-      : new Set(
+    setShowAll(checked);
+    localStorage.setItem("showAll", JSON.stringify(checked));
+    if (checked) {
+      setVisibleColumns(
+        new Set([
+          "height",
+          "head_length",
+          "chest_length",
+          "waist_length",
+          "hip_length",
+          "pants_length",
+          "foot_length",
+          "size_value",
+          "operation",
+        ])
+      );
+    } else {
+      setVisibleColumns(
+        new Set(
           [
             "height",
             "head_length",
@@ -286,11 +290,10 @@ const EditableTable: React.FC<{
             "pants_length",
             "foot_length",
             "size_value",
-            "operation",
           ].filter((col) => data.some((item) => item[col] !== null && item[col] !== ""))
-        );
-    setVisibleColumns(newVisibleColumns);
-    localStorage.setItem("visibleColumns", JSON.stringify([...newVisibleColumns]));
+        )
+      );
+    }
   };
 
   const menuItems = [
@@ -316,10 +319,7 @@ const EditableTable: React.FC<{
     {
       key: "show_all",
       label: (
-        <Checkbox
-          checked={visibleColumns.size === 9}
-          onChange={(e) => handleShowAllColumns(e.target.checked)}
-        >
+        <Checkbox checked={showAll} onChange={(e) => handleShowAllColumns(e.target.checked)}>
           Show All
         </Checkbox>
       ),

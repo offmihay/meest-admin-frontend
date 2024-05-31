@@ -49,6 +49,11 @@ textarea:focus, input:focus{
   box-shadow: 0 0 40px rgba(134, 134, 134, 0.199);
 }
 
+.ant-float-btn-icon{
+  width: unset !important;
+  height: unset !important;
+}
+
 
 @media screen and (max-width: 767.98px) {
   .bg-adminlogin{

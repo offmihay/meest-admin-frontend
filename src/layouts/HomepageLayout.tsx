@@ -7,39 +7,21 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import Dashboard from "../pages/content-pages/Dashboard/Dashboard";
 import Brands from "../pages/content-pages/Brands/Brands";
 import SizeTables from "../pages/content-pages/Sizetable/SizeTables";
+import useIsMobile from "../hooks/useIsMobile";
 
 const { Content } = Layout;
 
 const HomepageLayout = () => {
   const auth = useAuth();
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isCollapsed, setIsCollapsed] = useState(true);
 
-  const handleResize = () => {
-    if (window.innerWidth < 768) {
-      setIsMobile(true);
-    } else {
-      setIsMobile(false);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-  });
+  const isMobile = useIsMobile();
 
   return (
-    <Layout hasSider style={{ background: "white", minHeight: "100vh" }}>
-      <Sider
-        isMobile={isMobile}
-        isCollapsed={isCollapsed}
-        setIsCollapsed={() => setIsCollapsed(!isCollapsed)}
-      />
+    <Layout hasSider style={{ background: "white", minHeight: "100dvh" }}>
+      <Sider isCollapsed={isCollapsed} setIsCollapsed={() => setIsCollapsed(!isCollapsed)} />
       <Layout style={{ marginLeft: isMobile ? 0 : 300 }}>
-        <Header
-          isMobile={isMobile}
-          auth={auth}
-          setIsCollapsed={() => setIsCollapsed(!isCollapsed)}
-        />
+        <Header auth={auth} setIsCollapsed={() => setIsCollapsed(!isCollapsed)} />
         <Content
           style={{
             padding: isMobile ? 10 : 24,
