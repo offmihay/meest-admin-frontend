@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Modal, Select, Spin, notification } from "antd";
+import { Form, Input, Modal, Select, Spin, Switch, notification } from "antd";
 import { Brand } from "../../../utils/types/Brand";
 import { useAllBrandsQuery, useAllClothesQuery } from "../../../hooks/queries";
 import LogoCard from "../../../components/LogoCard";
@@ -15,12 +15,7 @@ const Brands: React.FC = () => {
   const allClothesQuery = useAllClothesQuery(selectedBrand?.key);
 
   useEffect(() => {
-    if (
-      open &&
-      allClothesQuery.data &&
-      allClothesQuery.data.length > 0 &&
-      selectedBrand
-    ) {
+    if (open && allClothesQuery.data && allClothesQuery.data.length > 0 && selectedBrand) {
       const { men, women, child } = allClothesQuery.data[0].exist_clothes;
 
       form.setFieldsValue({
@@ -31,6 +26,7 @@ const Brands: React.FC = () => {
         women_clothes: women,
         child_clothes: child,
         img_url: selectedBrand.img_url,
+        is_active: selectedBrand.is_active,
       });
     }
   }, [open, allClothesQuery.data, selectedBrand, form]);
@@ -74,19 +70,23 @@ const Brands: React.FC = () => {
   return (
     <>
       <div className="flex flex-wrap gap-4 justify-center">
-        {allBrandsQuery.data?.map((item: Brand) => (
-          <LogoCard
-            key={item.id}
-            logoSrc={item.img_url}
-            companyName={item.key}
-            onEdit={() => handleEdit(item)}
-            onDelete={() => {}}
-          />
-        ))}
+        {allBrandsQuery.data
+          ?.sort((item: Brand) => item.id)
+          .map((item: Brand) => (
+            <LogoCard
+              key={item.id}
+              logoSrc={item.img_url}
+              companyName={item.key}
+              onEdit={() => handleEdit(item)}
+              onDelete={() => {}}
+            />
+          ))}
       </div>
+
       <Modal
         title="Редагувати інформацію про бренд"
         centered
+        wrapClassName="m-4"
         open={open}
         onOk={handleFormSubmit}
         onCancel={() => {
@@ -95,128 +95,133 @@ const Brands: React.FC = () => {
         }}
         width={1000}
       >
-        <Form
-          form={form}
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 14 }}
-          layout="horizontal"
-          style={{ maxWidth: 600, marginTop: 40 }}
-        >
-          <Form.Item name="id" hidden>
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Назва бренду"
-            name="name"
-            rules={[
-              {
-                required: true,
-                message: "Please enter the brand name",
-              },
-              {
-                pattern: /^[A-Za-z\s]+$/,
-                message: "Brand name must be in English",
-              },
-            ]}
+        <Spin spinning={allClothesQuery.isFetching || allBrandsQuery.isFetching}>
+          <Form
+            form={form}
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 14 }}
+            layout="horizontal"
+            style={{ maxWidth: 600, marginTop: 40 }}
           >
-            <Input onChange={handleNameChange} />
-          </Form.Item>
-          <Form.Item
-            label="Транскрипція бренду"
-            name="key"
-            rules={[
-              {
-                required: true,
-                message: "Please enter the transcription of the brand",
-              },
-              {
-                pattern: /^[a-z]+(_[a-z]+)*$/,
-                message: "Transcription must be in English in snake_case",
-              },
-            ]}
-          >
-            <Input disabled />
-          </Form.Item>
-          <Form.Item label="Чоловічий одяг" name="men_clothes">
-            <Select
-              mode="multiple"
-              allowClear
-              style={{ width: "100%" }}
-              placeholder="Please select"
-              options={
-                allClothesQuery.data && allClothesQuery.data.length > 0
-                  ? allClothesQuery.data[0].all_clothes.map((item: string) => ({
-                      label: item,
-                      value: item,
-                    }))
-                  : []
-              }
-              defaultValue={
-                allClothesQuery.data && allClothesQuery.data.length > 0
-                  ? allClothesQuery.data[0].exist_clothes.men
-                  : []
-              }
-            />
-          </Form.Item>
-          <Form.Item label="Жіночий одяг" name="women_clothes">
-            <Select
-              mode="multiple"
-              allowClear
-              style={{ width: "100%" }}
-              placeholder="Please select"
-              options={
-                allClothesQuery.data && allClothesQuery.data.length > 0
-                  ? allClothesQuery.data[0].all_clothes.map((item: string) => ({
-                      label: item,
-                      value: item,
-                    }))
-                  : []
-              }
-              defaultValue={
-                allClothesQuery.data && allClothesQuery.data.length > 0
-                  ? allClothesQuery.data[0].exist_clothes.women
-                  : []
-              }
-            />
-          </Form.Item>
-          <Form.Item label="Дитячий одяг" name="child_clothes">
-            <Select
-              mode="multiple"
-              allowClear
-              style={{ width: "100%" }}
-              placeholder="Please select"
-              options={
-                allClothesQuery.data && allClothesQuery.data.length > 0
-                  ? allClothesQuery.data[0].all_clothes.map((item: string) => ({
-                      label: item,
-                      value: item,
-                    }))
-                  : []
-              }
-              defaultValue={
-                allClothesQuery.data && allClothesQuery.data.length > 0
-                  ? allClothesQuery.data[0].exist_clothes.child
-                  : []
-              }
-            />
-          </Form.Item>
-          <Form.Item
-            label="Лінк на лого бренду:"
-            name="img_url"
-            rules={[
-              {
-                required: true,
-                message: "Please enter the link",
-              },
-              {
-                type: "url",
-                message: "Please enter a valid URL",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-        </Form>
+            <Form.Item name="id" hidden>
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="Назва бренду"
+              name="name"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter the brand name",
+                },
+                {
+                  pattern: /^[A-Za-z\s]+$/,
+                  message: "Brand name must be in English",
+                },
+              ]}
+            >
+              <Input onChange={handleNameChange} />
+            </Form.Item>
+            <Form.Item
+              label="Транскрипція бренду"
+              name="key"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter the transcription of the brand",
+                },
+                {
+                  pattern: /^[a-z]+(_[a-z]+)*$/,
+                  message: "Transcription must be in English in snake_case",
+                },
+              ]}
+            >
+              <Input disabled />
+            </Form.Item>
+            <Form.Item label="Чоловічий одяг" name="men_clothes">
+              <Select
+                mode="multiple"
+                allowClear
+                style={{ width: "100%" }}
+                placeholder="Please select"
+                options={
+                  allClothesQuery.data && allClothesQuery.data.length > 0
+                    ? allClothesQuery.data[0].all_clothes.map((item: string) => ({
+                        label: item,
+                        value: item,
+                      }))
+                    : []
+                }
+                defaultValue={
+                  allClothesQuery.data && allClothesQuery.data.length > 0
+                    ? allClothesQuery.data[0].exist_clothes.men
+                    : []
+                }
+              />
+            </Form.Item>
+            <Form.Item label="Жіночий одяг" name="women_clothes">
+              <Select
+                mode="multiple"
+                allowClear
+                style={{ width: "100%" }}
+                placeholder="Please select"
+                options={
+                  allClothesQuery.data && allClothesQuery.data.length > 0
+                    ? allClothesQuery.data[0].all_clothes.map((item: string) => ({
+                        label: item,
+                        value: item,
+                      }))
+                    : []
+                }
+                defaultValue={
+                  allClothesQuery.data && allClothesQuery.data.length > 0
+                    ? allClothesQuery.data[0].exist_clothes.women
+                    : []
+                }
+              />
+            </Form.Item>
+            <Form.Item label="Дитячий одяг" name="child_clothes">
+              <Select
+                mode="multiple"
+                allowClear
+                style={{ width: "100%" }}
+                placeholder="Please select"
+                options={
+                  allClothesQuery.data && allClothesQuery.data.length > 0
+                    ? allClothesQuery.data[0].all_clothes.map((item: string) => ({
+                        label: item,
+                        value: item,
+                      }))
+                    : []
+                }
+                defaultValue={
+                  allClothesQuery.data && allClothesQuery.data.length > 0
+                    ? allClothesQuery.data[0].exist_clothes.child
+                    : []
+                }
+              />
+            </Form.Item>
+            <Form.Item
+              label="Лінк на лого бренду:"
+              name="img_url"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter the link",
+                },
+                {
+                  type: "url",
+                  message: "Please enter a valid URL",
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item label="Активний" name="is_active">
+              <Switch />
+            </Form.Item>
+          </Form>
+        </Spin>
       </Modal>
     </>
   );

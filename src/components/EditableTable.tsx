@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Form,
   Input,
@@ -7,9 +7,9 @@ import {
   Table,
   Button,
   notification,
-  Tooltip,
   Dropdown,
   Checkbox,
+  Select,
 } from "antd";
 import {
   EditOutlined,
@@ -45,7 +45,22 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   selectedSizeSystem,
   ...restProps
 }) => {
-  const inputNode = inputType === "number" ? <InputNumber /> : <Input />;
+  const inputNode =
+    dataIndex === "size_value" ? (
+      <Select>
+        <Select.Option value={null}>NULL</Select.Option>
+        {possibleSizeValues.map((value) => (
+          <Select.Option key={value} value={value}>
+            {value}
+          </Select.Option>
+        ))}
+      </Select>
+    ) : inputType === "number" ? (
+      <InputNumber />
+    ) : (
+      <Input />
+    );
+
   const rules: any[] = [
     {
       required: dataIndex === "size_value",
@@ -53,14 +68,8 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     },
     {
       validator: (_: any, value: any) => {
-        if (dataIndex === "size_value") {
-          if (
-            possibleSizeValues.includes(value) ||
-            (Number(value) >= 0 && Number(value) <= 1000)
-          ) {
-            return Promise.resolve();
-          }
-          return Promise.reject();
+        if (dataIndex === "size_value" && !possibleSizeValues.includes(value) && value !== null) {
+          return Promise.reject(new Error("Invalid size value"));
         }
         return Promise.resolve();
       },
@@ -70,7 +79,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   if (dataIndex !== "size_value") {
     rules.push({
       validator: (_: any, value: any) => {
-        if (value >= 0 && value <= 1000) {
+        if (value >= 0 && value <= 300) {
           return Promise.resolve();
         }
         return Promise.reject();
@@ -96,14 +105,9 @@ const EditableTable: React.FC<{
   setData: React.Dispatch<React.SetStateAction<TableDataWithKey[]>>;
   possibleSizeValues: string[];
   selectedSizeSystem: string;
+  setSelectedSizeSystem: React.Dispatch<React.SetStateAction<string>>;
   uniqClothId: number;
-}> = ({
-  data,
-  setData,
-  possibleSizeValues,
-  selectedSizeSystem,
-  uniqClothId,
-}) => {
+}> = ({ data, setData, possibleSizeValues, selectedSizeSystem, uniqClothId }) => {
   const [form] = Form.useForm();
   const [editingKey, setEditingKey] = useState<string>("");
   const [newRecordKeys, setNewRecordKeys] = useState<Set<string>>(new Set());
@@ -112,8 +116,21 @@ const EditableTable: React.FC<{
     if (storedColumns) {
       return new Set(JSON.parse(storedColumns));
     }
-    return new Set(
-      [
+    if (data.length != 0) {
+      return new Set(
+        [
+          "height",
+          "head_length",
+          "chest_length",
+          "waist_length",
+          "hip_length",
+          "pants_length",
+          "foot_length",
+          "size_value",
+        ].filter((col) => data.some((item) => item[col] !== null && item[col] !== ""))
+      );
+    } else {
+      return new Set([
         "height",
         "head_length",
         "chest_length",
@@ -122,12 +139,18 @@ const EditableTable: React.FC<{
         "pants_length",
         "foot_length",
         "size_value",
-        "operation",
-      ].filter((col) =>
-        data.some((item) => item[col] !== null && item[col] !== "")
-      )
-    );
+      ]);
+    }
   });
+
+  useEffect(() => {
+    // Reset size values to null when selectedSizeSystem changes
+    const newData = data.map((item) => ({
+      ...item,
+      size_value: item.size_system === selectedSizeSystem ? item.size_value : null,
+    }));
+    setData(newData);
+  }, [selectedSizeSystem]);
 
   const isEditing = (record: TableDataWithKey) => record.key === editingKey;
 
@@ -161,18 +184,17 @@ const EditableTable: React.FC<{
     try {
       const row = (await form.validateFields()) as TableDataWithKey;
 
+      if (row.size_value === null) {
+        throw new Error("Size value cannot be null");
+      }
+
       const valid = Object.keys(row).some(
         (field) =>
-          field !== "size_value" &&
-          field !== "key" &&
-          field !== "isNew" &&
-          row[field] !== null
+          field !== "size_value" && field !== "key" && field !== "isNew" && row[field] !== null
       );
 
       if (!valid) {
-        throw new Error(
-          "Хоча б один параметр має бути заповнений, окрім Size Value"
-        );
+        throw new Error("At least one parameter must be filled in, except Size Value");
       }
 
       const newData = [...data];
@@ -191,9 +213,11 @@ const EditableTable: React.FC<{
       newRecordKeys.delete(key);
       setNewRecordKeys(new Set(newRecordKeys));
     } catch (errInfo) {
-      const errorMessage =
-        "Хоча б один параметр має бути заповнений, окрім Size Value. Для Size Value допустимі значення: [XXS, XS, S, M, L, XL, XXL, XXXL] або числове значення";
-      openNotification("error", "Не правильно введені дані", errorMessage);
+      openNotification(
+        "error",
+        "Не правильно введені дані",
+        "Хоча б один параметр має бути заповнений, окрім Size Value. Для Size Value допустимі значення можна переглянути в таблиці конвертацій"
+      );
     }
   };
 
@@ -210,7 +234,7 @@ const EditableTable: React.FC<{
       pants_length: null,
       foot_length: null,
       size_system: selectedSizeSystem,
-      size_value: "",
+      size_value: null, // set initial value to null
       isNew: true,
     };
     setData([...data, newRow]);
@@ -234,10 +258,7 @@ const EditableTable: React.FC<{
       newVisibleColumns.delete(key);
     }
     setVisibleColumns(newVisibleColumns);
-    localStorage.setItem(
-      "visibleColumns",
-      JSON.stringify([...newVisibleColumns])
-    );
+    localStorage.setItem("visibleColumns", JSON.stringify([...newVisibleColumns]));
   };
 
   const handleShowAllColumns = (checked: boolean) => {
@@ -266,15 +287,10 @@ const EditableTable: React.FC<{
             "foot_length",
             "size_value",
             "operation",
-          ].filter((col) =>
-            data.some((item) => item[col] !== null && item[col] !== "")
-          )
+          ].filter((col) => data.some((item) => item[col] !== null && item[col] !== ""))
         );
     setVisibleColumns(newVisibleColumns);
-    localStorage.setItem(
-      "visibleColumns",
-      JSON.stringify([...newVisibleColumns])
-    );
+    localStorage.setItem("visibleColumns", JSON.stringify([...newVisibleColumns]));
   };
 
   const menuItems = [
@@ -300,8 +316,11 @@ const EditableTable: React.FC<{
     {
       key: "show_all",
       label: (
-        <Checkbox onChange={(e) => handleShowAllColumns(e.target.checked)}>
-          <b>Show All</b>
+        <Checkbox
+          checked={visibleColumns.size === 9}
+          onChange={(e) => handleShowAllColumns(e.target.checked)}
+        >
+          Show All
         </Checkbox>
       ),
     },
@@ -311,50 +330,77 @@ const EditableTable: React.FC<{
     {
       title: "Height",
       dataIndex: "height",
-      width: "10%",
       editable: true,
+      width: "10%",
     },
     {
       title: "Head Length",
       dataIndex: "head_length",
-      width: "10%",
       editable: true,
+      width: "10%",
     },
     {
       title: "Chest Length",
       dataIndex: "chest_length",
-      width: "10%",
       editable: true,
+      width: "10%",
     },
     {
       title: "Waist Length",
       dataIndex: "waist_length",
-      width: "10%",
       editable: true,
+      width: "10%",
     },
     {
       title: "Hip Length",
       dataIndex: "hip_length",
-      width: "10%",
       editable: true,
+      width: "10%",
     },
     {
       title: "Pants Length",
       dataIndex: "pants_length",
-      width: "10%",
       editable: true,
+      width: "10%",
     },
     {
       title: "Foot Length",
       dataIndex: "foot_length",
-      width: "10%",
       editable: true,
+      width: "10%",
+    },
+    {
+      title: "Size System",
+      dataIndex: "size_system",
+      editable: false,
+      render: (value: string) => value,
+      width: "10%",
     },
     {
       title: "Size Value",
       dataIndex: "size_value",
-      width: "10%",
       editable: true,
+      width: "10%",
+      render: (_: any, record: TableDataWithKey) => (
+        <Select
+          value={record.size_value}
+          style={{ width: "100%" }}
+          disabled={!isEditing(record)}
+          onChange={(value) => {
+            const newData = data.map((item) =>
+              item.key === record.key ? { ...item, size_value: value } : item
+            );
+            setData(newData);
+          }}
+        >
+          <Select.Option value={null}>NULL</Select.Option>
+          {possibleSizeValues.map((value) => (
+            <Select.Option key={value} value={value}>
+              {value}
+            </Select.Option>
+          ))}
+        </Select>
+      ),
     },
     {
       title: "Operation",
@@ -364,50 +410,31 @@ const EditableTable: React.FC<{
         const editable = isEditing(record);
         return editable ? (
           <span>
-            <Tooltip title="Сохранить">
-              <Button
-                onClick={() => save(record.key)}
-                style={{ marginRight: 8 }}
-                icon={<SaveOutlined />}
-              />
-            </Tooltip>
-            <Popconfirm
-              title="Ви впевнені що хочете відмінити?"
-              onConfirm={cancel}
-            >
-              <Tooltip title="Відмінити">
-                <Button icon={<CloseOutlined />} />
-              </Tooltip>
+            <Button
+              onClick={() => save(record.key)}
+              style={{ marginRight: 8 }}
+              icon={<SaveOutlined />}
+            />
+            <Popconfirm title="Are you sure to cancel?" onConfirm={cancel}>
+              <Button icon={<CloseOutlined />} />
             </Popconfirm>
           </span>
         ) : (
           <span>
-            <Tooltip title="Редагувати">
-              <Button
-                disabled={editingKey !== ""}
-                onClick={() => edit(record)}
-                style={{ marginRight: 8 }}
-                icon={<EditOutlined />}
-              />
-            </Tooltip>
-            <Popconfirm
-              title="Ви впевнені що хочете видалити?"
-              onConfirm={() => deleteRow(record.key)}
-            >
-              <Tooltip title="Видалити">
-                <Button
-                  disabled={editingKey !== ""}
-                  icon={<DeleteOutlined />}
-                />
-              </Tooltip>
+            <Button
+              disabled={editingKey !== ""}
+              onClick={() => edit(record)}
+              style={{ marginRight: 8 }}
+              icon={<EditOutlined />}
+            />
+            <Popconfirm title="Are you sure to delete?" onConfirm={() => deleteRow(record.key)}>
+              <Button disabled={editingKey !== ""} icon={<DeleteOutlined />} />
             </Popconfirm>
           </span>
         );
       },
     },
-  ].filter(
-    (col) => col.dataIndex === "operation" || visibleColumns.has(col.dataIndex)
-  );
+  ].filter((col) => col.dataIndex === "operation" || visibleColumns.has(col.dataIndex));
 
   const mergedColumns = columns.map((col) => {
     if (!col.editable) {
@@ -458,7 +485,7 @@ const EditableTable: React.FC<{
                 type="dashed"
                 style={{ maxWidth: "700px", width: "100%" }}
               >
-                Додати рядок
+                Add Row
               </Button>
             </div>
           )}

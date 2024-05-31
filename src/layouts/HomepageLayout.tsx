@@ -3,7 +3,7 @@ import { Layout } from "antd";
 import Header from "./Header";
 import Sider from "./Sider";
 import { useAuth } from "../hooks/useAuth";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Dashboard from "../pages/content-pages/Dashboard/Dashboard";
 import Brands from "../pages/content-pages/Brands/Brands";
 import SizeTables from "../pages/content-pages/Sizetable/SizeTables";
@@ -47,6 +47,7 @@ const HomepageLayout = () => {
           }}
         >
           <Routes>
+            <Route path="" element={<Navigate to="/dashboard" />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="brands" element={<Brands />} />
             <Route path="size-tables" element={<SizeTables />} />

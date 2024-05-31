@@ -19,48 +19,46 @@ const Sider = ({ isMobile, isCollapsed, setIsCollapsed }: Props) => {
   const navigate = useNavigate();
 
   const [activeKey, setActiveKey] = useState<string>(
-    localStorage.getItem("siderMenuActiveKey") || "1"
+    localStorage.getItem("siderMenuActive") || "dashboard"
   );
 
-  const handleSetActiveKey = (key: string) => {
+  const handleSetActiveMenu = (key: string) => {
     setActiveKey(key);
-    localStorage.setItem("siderMenuActiveKey", key);
+    localStorage.setItem("siderMenuActive", key);
+    navigate(key);
   };
 
   const siderMenuData: MenuProps["items"] = [
     {
-      key: "1",
+      key: "dashboard",
       icon: React.createElement(LineChartOutlined),
       label: "Головна",
       onClick: () => {
-        handleSetActiveKey("1");
-        navigate("/dashboard");
+        handleSetActiveMenu("dashboard");
       },
     },
     {
-      key: "2",
+      key: "brands",
       icon: React.createElement(CompassOutlined),
       label: "Бренди & Одяг",
       onClick: () => {
-        navigate("/brands");
-        handleSetActiveKey("2");
+        handleSetActiveMenu("brands");
       },
     },
     {
-      key: "3",
+      key: "size-tables",
       icon: React.createElement(TableOutlined),
       label: "Розмірні таблиці",
       onClick: () => {
-        navigate("/size-tables");
-        handleSetActiveKey("3");
+        handleSetActiveMenu("size-tables");
       },
     },
     {
-      key: "4",
+      key: "conversions",
       icon: React.createElement(TableOutlined),
       label: "Таблиці конвертацій",
       onClick: () => {
-        handleSetActiveKey("4");
+        handleSetActiveMenu("conversions");
       },
     },
   ];

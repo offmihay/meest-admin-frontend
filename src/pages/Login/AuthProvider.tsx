@@ -10,13 +10,9 @@ interface AuthProviderProps {
 }
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [userId, setUserId] = useState<string>(
-    localStorage.getItem("userId") || ""
-  );
+  const [userId, setUserId] = useState<string>(localStorage.getItem("userId") || "");
 
-  const [token, setToken] = useState<string>(
-    localStorage.getItem("token") || ""
-  );
+  const [token, setToken] = useState<string>(localStorage.getItem("token") || "");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,7 +34,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         localStorage.setItem("token", response.userData.token);
         setUserId(response.userData.userId);
         setToken(response.userData.token);
-        navigate("brands");
+        navigate("dashboard");
       }
     } catch (error: any) {
       alert("Username or password is not valid!");
@@ -46,8 +42,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const logOut = () => {
-    localStorage.removeItem("userId");
-    localStorage.removeItem("token");
+    localStorage.clear();
     setUserId("");
     setToken("");
     navigate("login");
@@ -60,11 +55,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     logOut,
   };
 
-  return (
-    <AuthContext.Provider value={authContextValue}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={authContextValue}>{children}</AuthContext.Provider>;
 };
 
 export default AuthProvider;

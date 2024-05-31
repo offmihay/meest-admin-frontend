@@ -7,8 +7,7 @@ import { TableData } from "../utils/types/TableData";
 export const useBrandsQuery = (selectedGender: string) => {
   return useQuery({
     queryKey: ["brands", selectedGender],
-    queryFn: (): Promise<Brand[]> =>
-      fetchJson(`api/brands?gender=${selectedGender}`),
+    queryFn: (): Promise<Brand[]> => fetchJson(`api/brands?gender=${selectedGender}`),
     initialData: [],
     enabled: selectedGender != "none",
     refetchOnWindowFocus: false,
@@ -16,10 +15,7 @@ export const useBrandsQuery = (selectedGender: string) => {
   });
 };
 
-export const useClothesQuery = (
-  selectedGender: string,
-  selectedBrand: string
-) => {
+export const useClothesQuery = (selectedGender: string, selectedBrand: string) => {
   return useQuery({
     queryKey: ["clothes", selectedBrand],
     queryFn: (): Promise<Cloth[]> =>
@@ -42,7 +38,7 @@ export const useTableDataQuery = (
     queryFn: (): Promise<{
       conversions: TableData[];
       possibleSizeSystems: string[];
-      possibleSizeValues: string[];
+      possibleSizeValues: any;
       isEmpty: boolean;
     }> =>
       fetchJson(

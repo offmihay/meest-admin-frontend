@@ -1,19 +1,14 @@
-import { Button, Space, Select, Divider, notification } from "antd";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import EditableTable from "../../../components/EditableTable";
-import { RocketOutlined, SearchOutlined } from "@ant-design/icons";
+import { Select, Button, Space, Divider, notification, Typography } from "antd";
+import { useBrandsQuery, useClothesQuery, useTableDataQuery } from "../../../hooks/queries";
 import { TableData } from "../../../utils/types/TableData";
-import Title from "antd/es/typography/Title";
+import { RocketOutlined, SearchOutlined } from "@ant-design/icons";
 import { postJson } from "../../../api/Api";
-import {
-  useBrandsQuery,
-  useClothesQuery,
-  useTableDataQuery,
-} from "../../../hooks/queries";
 
 type TableDataWithKey = TableData & { key: string };
 
-const SizeTables = () => {
+const SizeTables: React.FC = () => {
   const [selectedGender, setSelectedGender] = useState("none");
   const [selectedBrand, setSelectedBrand] = useState("none");
   const [selectedCloth, setSelectedCloth] = useState("none");
@@ -22,6 +17,7 @@ const SizeTables = () => {
   const [data, setData] = useState<TableDataWithKey[]>([]);
   const [possibleSizeSystems, setPossibleSizeSystems] = useState<string[]>([]);
   const [possibleSizeValues, setPossibleSizeValues] = useState<string[]>([]);
+  const [uniqClothId, setUniqClothId] = useState(1);
 
   const handleGenderChange = (value: string) => {
     setSelectedGender(value);
@@ -47,34 +43,33 @@ const SizeTables = () => {
 
   const brandsQuery = useBrandsQuery(selectedGender);
   const clothesQuery = useClothesQuery(selectedGender, selectedBrand);
-  const tableData = useTableDataQuery(
-    isHandleSearch,
-    selectedGender,
-    selectedBrand,
-    selectedCloth
-  );
+  const tableData = useTableDataQuery(isHandleSearch, selectedGender, selectedBrand, selectedCloth);
 
   useEffect(() => {
     if (tableData.data && tableData.data.conversions) {
       setData(
-        tableData.data.conversions.map((item, index) => ({
-          ...item,
-          key: (index + 1).toString(),
-        }))
+        !tableData.data.isEmpty
+          ? tableData.data.conversions.map((item, index) => ({
+              ...item,
+              key: (index + 1).toString(),
+            }))
+          : []
       );
-      setPossibleSizeSystems(tableData.data.possibleSizeSystems);
-      setPossibleSizeValues(tableData.data.possibleSizeValues);
+
       if (tableData.data.conversions.length > 0) {
         setSelectedSizeSystem(tableData.data.conversions[0].size_system);
+        setUniqClothId(tableData.data.conversions[0].uniq_cloth_id);
+        setPossibleSizeSystems(tableData.data.possibleSizeSystems);
+        setPossibleSizeValues(
+          tableData.data.possibleSizeValues[tableData.data.conversions[0].size_system]
+        );
       }
     }
   }, [tableData.data]);
 
   useEffect(() => {
-    data.forEach((item) => {
-      item.size_system = selectedSizeSystem;
-    });
-  }, [data, selectedSizeSystem]);
+    setPossibleSizeValues(tableData.data?.possibleSizeValues[selectedSizeSystem] || []);
+  }, [selectedSizeSystem, tableData.data]);
 
   const handleUpdateClick = async () => {
     const isValid = data.every(
@@ -144,9 +139,7 @@ const SizeTables = () => {
           />
           <Select
             defaultValue="none"
-            disabled={
-              selectedBrand === "none" || clothesQuery.data.length === 0
-            }
+            disabled={selectedBrand === "none" || clothesQuery.data.length === 0}
             style={{ width: 200 }}
             value={selectedCloth}
             onChange={handleClothChange}
@@ -164,9 +157,7 @@ const SizeTables = () => {
             icon={<SearchOutlined />}
             style={{ width: 200 }}
             disabled={
-              selectedGender === "none" ||
-              selectedBrand === "none" ||
-              selectedCloth === "none"
+              selectedGender === "none" || selectedBrand === "none" || selectedCloth === "none"
             }
             onClick={() => setHandleSearch(true)}
           >
@@ -178,22 +169,20 @@ const SizeTables = () => {
       {isHandleSearch && data.length > 0 && (
         <>
           <div className="flex flex-col items-center md:items-start">
-            <Title level={5}>Виберіть систему:</Title>
+            <Typography.Title level={5}>Виберіть систему:</Typography.Title>
             <Select
               defaultValue={selectedSizeSystem}
               style={{ width: 200 }}
               onChange={handleSizeSystemChange}
-              options={[
-                ...possibleSizeSystems.map((system) => ({
-                  value: system,
-                  label: system,
-                })),
-              ]}
+              options={possibleSizeSystems.map((system) => ({
+                value: system,
+                label: system,
+              }))}
             />
           </div>
         </>
       )}
-      {isHandleSearch && data.length > 0 && (
+      {isHandleSearch && (
         <>
           <Divider />
           <EditableTable
@@ -201,13 +190,15 @@ const SizeTables = () => {
             setData={setData}
             possibleSizeValues={possibleSizeValues}
             selectedSizeSystem={selectedSizeSystem}
-            uniqClothId={tableData.data.conversions[0].uniq_cloth_id || 1}
+            setSelectedSizeSystem={setSelectedSizeSystem}
+            uniqClothId={uniqClothId}
           />
-          <div className="flex justify-center mb-6">
+          <div className="flex justify-center mb-6 mt-2">
             <Button
               type="primary"
               style={{ width: 300, height: 50 }}
               onClick={handleUpdateClick}
+              disabled={data.length == 0}
             >
               <div className="flex items-center justify-center gap-2">
                 <RocketOutlined style={{ fontSize: 25 }} />

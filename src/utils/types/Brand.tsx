@@ -3,4 +3,5 @@ export type Brand = {
   name: string;
   key: string;
   img_url: string;
+  is_active: boolean;
 };

@@ -9,5 +9,5 @@ export type TableData = {
   pants_length: number | null;
   foot_length: number | null;
   size_system: string;
-  size_value: string;
+  size_value: string | null;
 };
