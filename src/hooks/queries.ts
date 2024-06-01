@@ -71,10 +71,14 @@ export const useAllBrandsQuery = () => {
   });
 };
 
-export const useAllClothesQuery = (brandKey: string | undefined) => {
+export const useAllClothesQuery = (
+  brandKey: string | undefined,
+  isNew: boolean,
+  hasBrand: boolean
+) => {
   return useQuery({
-    queryKey: ["exist-clothes", brandKey],
-    queryFn: () => fetchJson(`api/clothes-existing?brand=${brandKey}`),
+    queryKey: ["exist-clothes", brandKey, isNew],
+    queryFn: () => fetchJson(`api/clothes-existing?brand=${brandKey}&is_new=${isNew}`),
     initialData: {
       all_clothes: [],
       exist_clothes: {
@@ -83,14 +87,22 @@ export const useAllClothesQuery = (brandKey: string | undefined) => {
         child: [],
       },
     },
-    enabled: !!brandKey,
+    enabled: hasBrand, // Запрос выполняется, только если есть выбранный бренд
     refetchOnWindowFocus: false,
   });
 };
-
 export const useUpdateBrandsMutation = () => {
   return useMutation({
     mutationKey: ["update-brands"],
     mutationFn: (values: BrandForm) => postJson("api/update-brands", values),
+    retry: 3,
+  });
+};
+
+export const useDeleteBrandMutation = () => {
+  return useMutation({
+    mutationKey: ["delete-brand"],
+    mutationFn: (brand: Brand) => fetchJson(`api/delete-brand?id=${brand.id}`),
+    retry: 3,
   });
 };

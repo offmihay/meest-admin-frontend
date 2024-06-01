@@ -1,6 +1,6 @@
 import React from "react";
-import { Button, Card } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Button, Card, Popconfirm } from "antd";
+import { EditOutlined, DeleteOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 
 interface LogoCardProps {
   logoSrc: string;
@@ -23,9 +23,19 @@ const LogoCard: React.FC<LogoCardProps> = ({ logoSrc, companyName, onEdit, onDel
         <Button onClick={onEdit} type="dashed" className="" icon={<EditOutlined />}>
           Редагувати
         </Button>
-        <Button onClick={onDelete} type="dashed" danger icon={<DeleteOutlined />}>
-          Видалити
-        </Button>
+        <Popconfirm
+          title="Видалити бренд"
+          description="Ви впевнені що хочете видалити цей бренд? Видаляючи бренд, ви також видаляєте всі дані які були збережені за цим брендом. Ці дії незворотні! "
+          icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+          onConfirm={onDelete}
+          okText="Так"
+          cancelText="Скасувати"
+          overlayClassName="w-[300px]"
+        >
+          <Button type="dashed" danger icon={<DeleteOutlined />}>
+            Видалити
+          </Button>
+        </Popconfirm>
       </div>
     </Card>
   );

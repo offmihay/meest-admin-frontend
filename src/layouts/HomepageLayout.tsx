@@ -14,8 +14,15 @@ const { Content } = Layout;
 const HomepageLayout = () => {
   const auth = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(true);
-
   const isMobile = useIsMobile();
+
+  const SetLocalStorageAndRedirect = () => {
+    useEffect(() => {
+      localStorage.setItem("siderMenuActive", "dashboard");
+    }, []);
+
+    return <Navigate to="/dashboard" />;
+  };
 
   return (
     <Layout hasSider style={{ background: "white", minHeight: "100dvh" }}>
@@ -29,7 +36,7 @@ const HomepageLayout = () => {
           }}
         >
           <Routes>
-            <Route path="" element={<Navigate to="/dashboard" />} />
+            <Route path="/" element={<SetLocalStorageAndRedirect />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="brands" element={<Brands />} />
             <Route path="size-tables" element={<SizeTables />} />

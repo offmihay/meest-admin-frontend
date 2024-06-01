@@ -14,45 +14,78 @@ import { Brand } from "../../../utils/types/Brand";
 import {
   useAllBrandsQuery,
   useAllClothesQuery,
+  useDeleteBrandMutation,
   useUpdateBrandsMutation,
 } from "../../../hooks/queries";
 import LogoCard from "../../../components/LogoCard";
 import _ from "lodash";
 import { FileAddOutlined } from "@ant-design/icons";
 import useIsMobile from "../../../hooks/useIsMobile";
-// import { postJson } from "../../../api/Api";
 
 const Brands = () => {
   const [open, setOpen] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null);
+  const [selectedDeleteBrand, setSelectedDeleteBrand] = useState<Brand | null>(null);
   const [form] = Form.useForm();
   const isMobile = useIsMobile();
 
   const allBrandsQuery = useAllBrandsQuery();
-  const allClothesQuery = useAllClothesQuery(selectedBrand?.key);
+
+  const allClothesQuery = useAllClothesQuery(
+    selectedBrand?.key,
+    selectedBrand?.is_new ?? false,
+    !!selectedBrand
+  );
 
   const updateBrandsMutation = useUpdateBrandsMutation();
+  const deleteBrandMutation = useDeleteBrandMutation();
 
   useEffect(() => {
-    if (open && allClothesQuery.data && allClothesQuery.data.length > 0 && selectedBrand) {
-      const { men, women, child } = allClothesQuery.data[0].exist_clothes;
+    if (open && allClothesQuery.data && selectedBrand) {
+      const { men, women, child } = allClothesQuery.data[0]?.exist_clothes || {};
 
       form.setFieldsValue({
+        id: selectedBrand.id,
         key: selectedBrand.key,
         name: selectedBrand.name,
-        men_clothes: men,
-        women_clothes: women,
-        child_clothes: child,
+        men_clothes: men || [],
+        women_clothes: women || [],
+        child_clothes: child || [],
         img_url: selectedBrand.img_url,
         is_active: selectedBrand.is_active,
       });
     }
   }, [open, allClothesQuery.data, selectedBrand, form]);
 
+  useEffect(() => {
+    if (selectedDeleteBrand) {
+      deleteBrandMutation.mutate(selectedDeleteBrand, {
+        onSuccess: () => {
+          notification.success({
+            message: "Успішно",
+            description: "Бренд успішно видалено!",
+          });
+          setSelectedDeleteBrand(null);
+          allBrandsQuery.refetch();
+        },
+        onError: (error) => {
+          notification.error({
+            message: "Помилка",
+            description: `Сталась помилка при видаленні бренду: ${error.message}`,
+          });
+          setSelectedDeleteBrand(null);
+        },
+      });
+    }
+  }, [selectedDeleteBrand]);
+
   const handleEdit = (brand: Brand) => {
-    console.log(brand);
     setSelectedBrand(brand);
     setOpen(true);
+  };
+
+  const handleDelete = (brand: Brand) => {
+    setSelectedDeleteBrand(brand);
   };
 
   const emptyBrand = {
@@ -61,6 +94,7 @@ const Brands = () => {
     is_active: false,
     key: "",
     name: "",
+    is_new: true,
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,6 +115,7 @@ const Brands = () => {
           });
           setOpen(false);
           setSelectedBrand(null);
+          allBrandsQuery.refetch();
         },
         onError: (error) => {
           notification.error({
@@ -94,6 +129,8 @@ const Brands = () => {
     }
   };
 
+  console.log("selectedBrand:", selectedBrand); // Добавим лог для отладки
+
   return (
     <>
       <div className="flex flex-wrap gap-4 justify-center">
@@ -103,13 +140,13 @@ const Brands = () => {
             logoSrc={item.img_url}
             companyName={item.key}
             onEdit={() => handleEdit(item)}
-            onDelete={() => {}}
+            onDelete={() => handleDelete(item)}
           />
         ))}
       </div>
 
       <Modal
-        title="Редагувати інформацію про бренд"
+        title={selectedBrand?.is_new ? "Додати новий бренд" : "Редагувати інформацію про бренд"}
         centered
         wrapClassName="!top-2"
         open={open}
@@ -143,6 +180,15 @@ const Brands = () => {
               maxWidth: 600,
               marginTop: 40,
               display: allClothesQuery.isFetching ? "none" : "block", //for skeleton
+            }}
+            initialValues={{
+              key: selectedBrand?.key || "",
+              name: selectedBrand?.name || "",
+              men_clothes: allClothesQuery.data?.[0]?.exist_clothes?.men || [],
+              women_clothes: allClothesQuery.data?.[0]?.exist_clothes?.women || [],
+              child_clothes: allClothesQuery.data?.[0]?.exist_clothes?.child || [],
+              img_url: selectedBrand?.img_url || "",
+              is_active: selectedBrand?.is_active || false,
             }}
           >
             <Form.Item name="id" hidden>
@@ -194,11 +240,6 @@ const Brands = () => {
                       }))
                     : []
                 }
-                defaultValue={
-                  allClothesQuery.data && allClothesQuery.data.length > 0
-                    ? allClothesQuery.data[0].exist_clothes.men
-                    : []
-                }
               />
             </Form.Item>
             <Form.Item label="Жіночий одяг" name="women_clothes">
@@ -215,11 +256,6 @@ const Brands = () => {
                       }))
                     : []
                 }
-                defaultValue={
-                  allClothesQuery.data && allClothesQuery.data.length > 0
-                    ? allClothesQuery.data[0].exist_clothes.women
-                    : []
-                }
               />
             </Form.Item>
             <Form.Item label="Дитячий одяг" name="child_clothes">
@@ -234,11 +270,6 @@ const Brands = () => {
                         label: item,
                         value: item,
                       }))
-                    : []
-                }
-                defaultValue={
-                  allClothesQuery.data && allClothesQuery.data.length > 0
-                    ? allClothesQuery.data[0].exist_clothes.child
                     : []
                 }
               />
