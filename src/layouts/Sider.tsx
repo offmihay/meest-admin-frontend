@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   CloseOutlined,
   CompassOutlined,
@@ -22,6 +22,10 @@ const Sider = ({ isCollapsed, setIsCollapsed }: Props) => {
   const [activeKey, setActiveKey] = useState<string>(
     localStorage.getItem("siderMenuActive") || "dashboard"
   );
+
+  useEffect(() => {
+    handleSetActiveMenu(localStorage.getItem("siderMenuActive") || "dashboard");
+  }, []);
 
   const handleSetActiveMenu = (key: string) => {
     setActiveKey(key);

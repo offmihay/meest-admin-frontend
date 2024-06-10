@@ -129,8 +129,6 @@ const Brands = () => {
     }
   };
 
-  console.log("selectedBrand:", selectedBrand); // Добавим лог для отладки
-
   return (
     <>
       <div className="flex flex-wrap gap-4 justify-center">

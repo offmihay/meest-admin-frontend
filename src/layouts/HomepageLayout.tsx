@@ -8,6 +8,7 @@ import Dashboard from "../pages/content-pages/Dashboard/Dashboard";
 import Brands from "../pages/content-pages/Brands/Brands";
 import SizeTables from "../pages/content-pages/Sizetable/SizeTables";
 import useIsMobile from "../hooks/useIsMobile";
+import SizeConversions from "../pages/content-pages/SizeConversions/SizeConversions";
 
 const { Content } = Layout;
 
@@ -40,6 +41,7 @@ const HomepageLayout = () => {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="brands" element={<Brands />} />
             <Route path="size-tables" element={<SizeTables />} />
+            <Route path="conversions" element={<SizeConversions />} />
           </Routes>
         </Content>
       </Layout>

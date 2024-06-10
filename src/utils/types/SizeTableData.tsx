@@ -1,4 +1,4 @@
-export type TableData = {
+export type SizeTableData = {
   id?: number;
   uniq_cloth_id: number;
   height: number | null;

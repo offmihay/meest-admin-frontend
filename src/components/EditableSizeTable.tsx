@@ -18,9 +18,9 @@ import {
   CloseOutlined,
   FilterOutlined,
 } from "@ant-design/icons";
-import { TableData } from "../utils/types/TableData";
+import { SizeTableData } from "../utils/types/SizeTableData";
 
-interface TableDataWithKey extends TableData {
+interface TableDataWithKey extends SizeTableData {
   key: string;
   isNew?: boolean;
   [key: string]: any;
@@ -113,36 +113,52 @@ const EditableTable: React.FC<{
   const [newRecordKeys, setNewRecordKeys] = useState<Set<string>>(new Set());
   const [showAll, setShowAll] = useState(() => {
     const storedShowAll = localStorage.getItem("showAll");
-    return storedShowAll ? JSON.parse(storedShowAll) : false;
+    return storedShowAll ? JSON.parse(storedShowAll) : true;
   });
 
+  const filledBodyParts = [
+    "height",
+    "head_length",
+    "chest_length",
+    "waist_length",
+    "hip_length",
+    "pants_length",
+    "foot_length",
+  ].filter((col) => data.some((item) => item[col] !== null && item[col] !== ""));
+
   const [visibleColumns, setVisibleColumns] = useState<Set<string>>(() => {
-    if (showAll || data.length == 0) {
-      return new Set([
-        "height",
-        "head_length",
-        "chest_length",
-        "waist_length",
-        "hip_length",
-        "pants_length",
-        "foot_length",
-        "size_value",
-        "operation",
-      ]);
-    }
-    return new Set(
-      [
-        "height",
-        "head_length",
-        "chest_length",
-        "waist_length",
-        "hip_length",
-        "pants_length",
-        "foot_length",
-        "size_value",
-      ].filter((col) => data.some((item) => item[col] !== null && item[col] !== ""))
-    );
+    return new Set([
+      "height",
+      "head_length",
+      "chest_length",
+      "waist_length",
+      "hip_length",
+      "pants_length",
+      "foot_length",
+      "size_value",
+      "operation",
+    ]);
   });
+
+  useEffect(() => {
+    if (localStorage.getItem("showAll") == "true" || filledBodyParts.length == 0) {
+      setVisibleColumns(
+        new Set([
+          "height",
+          "head_length",
+          "chest_length",
+          "waist_length",
+          "hip_length",
+          "pants_length",
+          "foot_length",
+          "size_value",
+          "operation",
+        ])
+      );
+    } else {
+      setVisibleColumns(new Set(["size_value", ...filledBodyParts]));
+    }
+  }, [data]);
 
   useEffect(() => {
     // Reset size values to null when selectedSizeSystem changes
@@ -251,7 +267,7 @@ const EditableTable: React.FC<{
   };
 
   const handleColumnVisibilityChange = (key: string, checked: boolean) => {
-    if (key === "size_value" || key === "operation") return;
+    if (key === "operation") return;
     const newVisibleColumns = new Set(visibleColumns);
     if (checked) {
       newVisibleColumns.add(key);
@@ -275,24 +291,25 @@ const EditableTable: React.FC<{
           "pants_length",
           "foot_length",
           "size_value",
-          "operation",
         ])
       );
     } else {
-      setVisibleColumns(
-        new Set(
-          [
-            "height",
-            "head_length",
-            "chest_length",
-            "waist_length",
-            "hip_length",
-            "pants_length",
-            "foot_length",
+      if (filledBodyParts.length != 0) {
+        setVisibleColumns(
+          new Set([
             "size_value",
-          ].filter((col) => data.some((item) => item[col] !== null && item[col] !== ""))
-        )
-      );
+            ...[
+              "height",
+              "head_length",
+              "chest_length",
+              "waist_length",
+              "hip_length",
+              "pants_length",
+              "foot_length",
+            ].filter((col) => data.some((item) => item[col] !== null && item[col] !== "")),
+          ])
+        );
+      }
     }
   };
 

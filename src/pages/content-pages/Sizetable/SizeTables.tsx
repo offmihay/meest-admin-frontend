@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
-import EditableTable from "../../../components/EditableTable";
-import { Select, Button, Space, Divider, notification, Typography } from "antd";
+import EditableTable from "../../../components/EditableSizeTable";
+import { Select, Button, Divider, notification, Spin } from "antd";
 import { useBrandsQuery, useClothesQuery, useTableDataQuery } from "../../../hooks/queries";
-import { TableData } from "../../../utils/types/TableData";
-import { RocketOutlined, SearchOutlined } from "@ant-design/icons";
+import { SizeTableData } from "../../../utils/types/SizeTableData";
+import { RocketOutlined } from "@ant-design/icons";
 import { postJson } from "../../../api/Api";
 
-type TableDataWithKey = TableData & { key: string };
+type TableDataWithKey = SizeTableData & { key: string };
 
 const SizeTables: React.FC = () => {
   const [selectedGender, setSelectedGender] = useState("none");
   const [selectedBrand, setSelectedBrand] = useState("none");
   const [selectedCloth, setSelectedCloth] = useState("none");
-  const [selectedSizeSystem, setSelectedSizeSystem] = useState("");
+  const [selectedSizeSystem, setSelectedSizeSystem] = useState("none");
   const [isHandleSearch, setHandleSearch] = useState(false);
   const [data, setData] = useState<TableDataWithKey[]>([]);
   const [possibleSizeSystems, setPossibleSizeSystems] = useState<string[]>([]);
@@ -23,18 +23,24 @@ const SizeTables: React.FC = () => {
     setSelectedGender(value);
     setSelectedBrand("none");
     setSelectedCloth("none");
+    setSelectedSizeSystem("none");
     setHandleSearch(false);
   };
 
   const handleBrandChange = (value: string) => {
     setSelectedBrand(value);
     setSelectedCloth("none");
+    setSelectedSizeSystem("none");
     setHandleSearch(false);
   };
 
   const handleClothChange = (value: string) => {
     setSelectedCloth(value);
-    setHandleSearch(false);
+    if (value != "none") {
+      setHandleSearch(true);
+    } else {
+      setHandleSearch(false);
+    }
   };
 
   const handleSizeSystemChange = (value: string) => {
@@ -65,7 +71,7 @@ const SizeTables: React.FC = () => {
         );
       }
     }
-  }, [tableData.data]);
+  }, [tableData.data.conversions]);
 
   useEffect(() => {
     setPossibleSizeValues(tableData.data?.possibleSizeValues[selectedSizeSystem] || []);
@@ -86,7 +92,19 @@ const SizeTables: React.FC = () => {
 
     if (isValid) {
       try {
-        const response = await postJson("api/update-conversions", data);
+        let tempdata;
+        if (data.length != 0) {
+          tempdata = data.map((obj) => ({
+            ...obj,
+            size_system: selectedSizeSystem,
+          }));
+        } else {
+          tempdata = [
+            { uniq_cloth_id: uniqClothId, size_system: selectedSizeSystem, isEmpty: true },
+          ];
+        }
+
+        const response = await postJson("api/update-conversions", tempdata);
         console.log(response);
         notification.success({
           message: "Успішно",
@@ -110,95 +128,100 @@ const SizeTables: React.FC = () => {
 
   return (
     <>
-      <div className="mt-6 flex flex-col items-center md:items-start">
-        <Space direction="vertical" size="middle">
-          <Select
-            defaultValue="none"
-            style={{ width: 200 }}
-            onChange={handleGenderChange}
-            options={[
-              { value: "none", label: "-- Виберіть стать --" },
-              { value: "male", label: "Men" },
-              { value: "female", label: "Women" },
-              { value: "child", label: "Children" },
-            ]}
-          />
-          <Select
-            defaultValue="none"
-            disabled={brandsQuery.data.length === 0 || brandsQuery.isFetching}
-            style={{ width: 200 }}
-            value={selectedBrand}
-            onChange={handleBrandChange}
-            options={[
-              { value: "none", label: "-- Виберіть бренд --" },
-              ...brandsQuery.data.map((brand) => ({
-                value: brand.key,
-                label: brand.name,
-              })),
-            ]}
-          />
-          <Select
-            defaultValue="none"
-            disabled={selectedBrand === "none" || clothesQuery.data.length === 0}
-            style={{ width: 200 }}
-            value={selectedCloth}
-            onChange={handleClothChange}
-            options={[
-              { value: "none", label: "-- Виберіть тип одягу --" },
-              ...clothesQuery.data.map((cloth) => ({
-                value: cloth.key,
-                label: cloth.name,
-              })),
-            ]}
-          />
+      <div className="mt-6 flex flex-col lg:flex-row gap-4 items-center md:items-start">
+        <Select
+          defaultValue="none"
+          style={{ width: 200 }}
+          value={selectedGender}
+          onChange={handleGenderChange}
+          options={[
+            { value: "none", label: "-- Виберіть стать --" },
+            { value: "male", label: "Чоловік" },
+            { value: "female", label: "Жінка" },
+            { value: "child", label: "Дитина" },
+          ]}
+        />
+        <Select
+          defaultValue="none"
+          disabled={brandsQuery.data.length === 0 || brandsQuery.isFetching}
+          style={{ width: 200 }}
+          value={selectedBrand}
+          onChange={handleBrandChange}
+          options={[
+            { value: "none", label: "-- Виберіть бренд --" },
+            ...brandsQuery.data.map((brand) => ({
+              value: brand.key,
+              label: brand.name,
+            })),
+          ]}
+        />
+        <Select
+          defaultValue="none"
+          disabled={selectedBrand === "none" || clothesQuery.data.length === 0}
+          style={{ width: 200 }}
+          value={selectedCloth}
+          onChange={handleClothChange}
+          options={[
+            { value: "none", label: "-- Виберіть тип одягу --" },
+            ...clothesQuery.data.map((cloth) => ({
+              value: cloth.key,
+              label: cloth.name,
+            })),
+          ]}
+        />
 
-          <Button
-            type="primary"
-            icon={<SearchOutlined />}
-            style={{ width: 200 }}
-            disabled={
-              selectedGender === "none" || selectedBrand === "none" || selectedCloth === "none"
-            }
-            onClick={() => setHandleSearch(true)}
-          >
-            Пошук
-          </Button>
-        </Space>
-        <Divider />
+        {/* <Button
+          type="primary"
+          icon={<SearchOutlined />}
+          style={{ width: 200 }}
+          disabled={
+            selectedGender === "none" || selectedBrand === "none" || selectedCloth === "none"
+          }
+          onClick={() => setHandleSearch(true)}
+        >
+          Пошук
+        </Button> */}
       </div>
-      {isHandleSearch && data.length > 0 && (
+      {
         <>
+          <Divider />
           <div className="flex flex-col items-center md:items-start">
-            <Typography.Title level={5}>Виберіть систему:</Typography.Title>
             <Select
-              defaultValue={selectedSizeSystem}
+              disabled={!isHandleSearch && data.length == 0}
+              defaultValue="none"
+              value={selectedSizeSystem}
               style={{ width: 200 }}
               onChange={handleSizeSystemChange}
-              options={possibleSizeSystems.map((system) => ({
-                value: system,
-                label: system,
-              }))}
+              options={[
+                { value: "none", label: "-- Виберіть систему --" },
+                ...possibleSizeSystems.map((system) => ({
+                  value: system,
+                  label: system,
+                })),
+              ]}
             />
           </div>
         </>
-      )}
+      }
       {isHandleSearch && (
         <>
           <Divider />
-          <EditableTable
-            data={data}
-            setData={setData}
-            possibleSizeValues={possibleSizeValues}
-            selectedSizeSystem={selectedSizeSystem}
-            setSelectedSizeSystem={setSelectedSizeSystem}
-            uniqClothId={uniqClothId}
-          />
+          <Spin spinning={tableData.isFetching}>
+            <EditableTable
+              data={data}
+              setData={setData}
+              possibleSizeValues={possibleSizeValues}
+              selectedSizeSystem={selectedSizeSystem}
+              setSelectedSizeSystem={setSelectedSizeSystem}
+              uniqClothId={uniqClothId}
+            />
+          </Spin>
           <div className="flex justify-center mb-6 mt-2">
             <Button
               type="primary"
               style={{ width: 300, height: 50 }}
               onClick={handleUpdateClick}
-              disabled={data.length == 0}
+              disabled={tableData.isFetching}
             >
               <div className="flex items-center justify-center gap-2">
                 <RocketOutlined style={{ fontSize: 25 }} />

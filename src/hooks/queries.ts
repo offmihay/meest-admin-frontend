@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { fetchJson, postJson } from "../api/Api";
 import { Brand } from "../utils/types/Brand";
 import { Cloth } from "../utils/types/Cloth";
-import { TableData } from "../utils/types/TableData";
+import { SizeTableData } from "../utils/types/SizeTableData";
 import { BrandForm } from "../utils/types/BrandForm";
 
 export const useBrandsQuery = (selectedGender: string) => {
@@ -37,7 +37,7 @@ export const useTableDataQuery = (
   return useQuery({
     queryKey: ["tableData", selectedGender, selectedBrand, selectedCloth],
     queryFn: (): Promise<{
-      conversions: TableData[];
+      conversions: SizeTableData[];
       possibleSizeSystems: string[];
       possibleSizeValues: any;
       isEmpty: boolean;
@@ -104,5 +104,26 @@ export const useDeleteBrandMutation = () => {
     mutationKey: ["delete-brand"],
     mutationFn: (brand: Brand) => fetchJson(`api/delete-brand?id=${brand.id}`),
     retry: 3,
+  });
+};
+
+export const useConversionsTableQuery = (system_category: string) => {
+  return useQuery({
+    queryKey: ["conversion-table", system_category],
+    queryFn: () => fetchJson(`api/system-conversions?system_category=${system_category}`),
+    initialData: [],
+    refetchOnWindowFocus: false,
+    retry: 0,
+    enabled: system_category != "none",
+  });
+};
+
+export const useSysCategoriesQuery = () => {
+  return useQuery({
+    queryKey: ["system-categories"],
+    queryFn: (): Promise<Brand[]> => fetchJson(`api/system-categories`),
+    initialData: [],
+    refetchOnWindowFocus: false,
+    retry: 0,
   });
 };
