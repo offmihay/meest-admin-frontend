@@ -4,7 +4,7 @@ import { EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined } from "@ant-
 
 interface TableDataWithKey {
   key: string;
-  [key: string]: string | number | boolean | null;
+  [key: string]: string | null;
 }
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
@@ -17,7 +17,7 @@ interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
 
 interface EditableConversionTableProps {
   data: TableDataWithKey[];
-  setData: React.Dispatch<React.SetStateAction<TableDataWithKey[]>>;
+  setData: React.Dispatch<React.SetStateAction<any[]>>;
   columns: string[];
 }
 
@@ -210,7 +210,7 @@ const EditableConversionTable: React.FC<EditableConversionTableProps> = ({
           rowClassName="editable-row"
           pagination={{
             onChange: cancel,
-            pageSize: 20,
+            pageSize: 50,
           }}
           footer={() => (
             <div style={{ display: "flex", justifyContent: "center" }}>

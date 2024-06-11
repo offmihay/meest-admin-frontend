@@ -4,6 +4,7 @@ import { Brand } from "../utils/types/Brand";
 import { Cloth } from "../utils/types/Cloth";
 import { SizeTableData } from "../utils/types/SizeTableData";
 import { BrandForm } from "../utils/types/BrandForm";
+import { ConversionForm } from "../utils/types/ConversionForm";
 
 export const useBrandsQuery = (selectedGender: string) => {
   return useQuery({
@@ -125,5 +126,13 @@ export const useSysCategoriesQuery = () => {
     initialData: [],
     refetchOnWindowFocus: false,
     retry: 0,
+  });
+};
+
+export const useUpdateSysCategoriesMutation = () => {
+  return useMutation({
+    mutationKey: ["delete-system-categories"],
+    mutationFn: (values: ConversionForm) => postJson("api/update-system-conversions", values),
+    retry: 3,
   });
 };
