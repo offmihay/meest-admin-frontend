@@ -128,7 +128,7 @@ const SizeTables: React.FC = () => {
 
   return (
     <>
-      <div className="mt-6 flex flex-col lg:flex-row gap-4 items-center md:items-start">
+      <div className="mt-0 flex flex-col lg:flex-row gap-4 items-center md:items-start">
         <Select
           defaultValue="none"
           style={{ width: 200 }}

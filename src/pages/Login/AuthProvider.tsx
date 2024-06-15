@@ -34,7 +34,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         localStorage.setItem("token", response.userData.token);
         setUserId(response.userData.userId);
         setToken(response.userData.token);
-        navigate("dashboard");
+        navigate("");
       }
     } catch (error: any) {
       alert("Username or password is not valid!");

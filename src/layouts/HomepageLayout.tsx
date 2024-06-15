@@ -4,7 +4,6 @@ import Header from "./Header";
 import Sider from "./Sider";
 import { useAuth } from "../hooks/useAuth";
 import { Navigate, Route, Routes } from "react-router-dom";
-import Dashboard from "../pages/content-pages/Dashboard/Dashboard";
 import Brands from "../pages/content-pages/Brands/Brands";
 import SizeTables from "../pages/content-pages/Sizetable/SizeTables";
 import useIsMobile from "../hooks/useIsMobile";
@@ -19,10 +18,10 @@ const HomepageLayout = () => {
 
   const SetLocalStorageAndRedirect = () => {
     useEffect(() => {
-      localStorage.setItem("siderMenuActive", "dashboard");
+      localStorage.setItem("siderMenuActive", "brands");
     }, []);
 
-    return <Navigate to="/dashboard" />;
+    return <Navigate to="/brands" />;
   };
 
   return (
@@ -38,7 +37,7 @@ const HomepageLayout = () => {
         >
           <Routes>
             <Route path="/" element={<SetLocalStorageAndRedirect />} />
-            <Route path="dashboard" element={<Dashboard />} />
+            {/* <Route path="dashboard" element={<Dashboard />} /> */}
             <Route path="brands" element={<Brands />} />
             <Route path="size-tables" element={<SizeTables />} />
             <Route path="conversions" element={<SizeConversions />} />

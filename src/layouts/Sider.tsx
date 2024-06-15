@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  CloseOutlined,
-  CompassOutlined,
-  LineChartOutlined,
-  TableOutlined,
-} from "@ant-design/icons";
+import { CloseOutlined, CompassOutlined, TableOutlined } from "@ant-design/icons";
 import { Layout, Menu, MenuProps, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import useIsMobile from "../hooks/useIsMobile";
@@ -20,11 +15,11 @@ const Sider = ({ isCollapsed, setIsCollapsed }: Props) => {
   const isMobile = useIsMobile();
 
   const [activeKey, setActiveKey] = useState<string>(
-    localStorage.getItem("siderMenuActive") || "dashboard"
+    localStorage.getItem("siderMenuActive") || "brands"
   );
 
   useEffect(() => {
-    handleSetActiveMenu(localStorage.getItem("siderMenuActive") || "dashboard");
+    handleSetActiveMenu(localStorage.getItem("siderMenuActive") || "brands");
   }, []);
 
   const handleSetActiveMenu = (key: string) => {
@@ -34,14 +29,14 @@ const Sider = ({ isCollapsed, setIsCollapsed }: Props) => {
   };
 
   const siderMenuData: MenuProps["items"] = [
-    {
-      key: "dashboard",
-      icon: React.createElement(LineChartOutlined),
-      label: "Головна",
-      onClick: () => {
-        handleSetActiveMenu("dashboard");
-      },
-    },
+    // {
+    //   key: "dashboard",
+    //   icon: React.createElement(LineChartOutlined),
+    //   label: "Головна",
+    //   onClick: () => {
+    //     handleSetActiveMenu("dashboard");
+    //   },
+    // },
     {
       key: "brands",
       icon: React.createElement(CompassOutlined),
@@ -88,7 +83,7 @@ const Sider = ({ isCollapsed, setIsCollapsed }: Props) => {
         onClick={setIsCollapsed}
       >
         <div className="absolute top-0 w-full pl-6 pt-6">
-          <a href="#">
+          <a onClick={() => navigate("")}>
             <img
               src={`${import.meta.env.BASE_URL}assets/images/admin-logo.png`}
               className="w-7/12"

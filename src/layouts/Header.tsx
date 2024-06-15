@@ -1,13 +1,7 @@
-import { Button, Input, Layout } from "antd";
+import { Button, Layout } from "antd";
 import DropdownPrimary from "../components/DropdownPrimary";
 
-import {
-  LogoutOutlined,
-  MenuOutlined,
-  SearchOutlined,
-  SettingOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import { LogoutOutlined, MenuOutlined, UserOutlined } from "@ant-design/icons";
 import { AuthContextType } from "../utils/types/AuthContextType";
 import useIsMobile from "../hooks/useIsMobile";
 
@@ -22,11 +16,11 @@ const Header = ({ auth, setIsCollapsed }: HeaderProps) => {
   const isMobile = useIsMobile();
 
   const profileDropdownItems = [
-    {
-      label: "Settings",
-      key: "0",
-      icon: <SettingOutlined />,
-    },
+    // {
+    //   label: "Settings",
+    //   key: "0",
+    //   icon: <SettingOutlined />,
+    // },
     {
       label: "Log Out",
       key: "1",
@@ -65,11 +59,7 @@ const Header = ({ auth, setIsCollapsed }: HeaderProps) => {
           }}
         />
       )}
-      <Input
-        placeholder="Пошук"
-        prefix={<SearchOutlined className="text-[20px]" />}
-        style={{ width: "300px", borderRadius: 100 }}
-      />
+      <div></div>
       <DropdownPrimary items={profileDropdownItems} baseElement={userIcon} />
     </Header>
   );
