@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { CloseOutlined, CompassOutlined, TableOutlined } from "@ant-design/icons";
+import {
+  CloseOutlined,
+  CompassOutlined,
+  TableOutlined,
+} from "@ant-design/icons";
 import { Layout, Menu, MenuProps, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import useIsMobile from "../hooks/useIsMobile";
@@ -15,7 +19,7 @@ const Sider = ({ isCollapsed, setIsCollapsed }: Props) => {
   const isMobile = useIsMobile();
 
   const [activeKey, setActiveKey] = useState<string>(
-    localStorage.getItem("siderMenuActive") || "brands"
+    localStorage.getItem("siderMenuActive") || "brands",
   );
 
   useEffect(() => {
@@ -67,7 +71,7 @@ const Sider = ({ isCollapsed, setIsCollapsed }: Props) => {
     <>
       <Sider
         width={300}
-        className="!bg-white shadow-xl relative"
+        className="!bg-white relative border-solid border-0 border-r border-gray-200"
         trigger={null}
         style={{
           height: "100dvh",
@@ -82,15 +86,6 @@ const Sider = ({ isCollapsed, setIsCollapsed }: Props) => {
         collapsed={isMobile ? isCollapsed : false}
         onClick={setIsCollapsed}
       >
-        <div className="absolute top-0 w-full pl-6 pt-6">
-          <a onClick={() => navigate("")}>
-            <img
-              src={`${import.meta.env.BASE_URL}assets/images/admin-logo.png`}
-              className="w-7/12"
-              alt=""
-            />
-          </a>
-        </div>
         {isMobile && (
           <div className="absolute rounded-full right-4 top-4">
             <Button
@@ -105,10 +100,10 @@ const Sider = ({ isCollapsed, setIsCollapsed }: Props) => {
           </div>
         )}
 
-        <div className="h-[120px]"></div>
+        <div className="h-[50px]"></div>
         <Menu
           mode="inline"
-          style={{ borderRight: 0 }}
+          style={{ borderRight: 0, padding: 10 }}
           items={siderMenuData}
           selectedKeys={[activeKey]}
         />

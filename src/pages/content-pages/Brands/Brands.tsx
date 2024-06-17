@@ -19,13 +19,15 @@ import {
 } from "../../../hooks/queries";
 import LogoCard from "../../../components/LogoCard";
 import _ from "lodash";
-import { FileAddOutlined } from "@ant-design/icons";
+import { AppstoreAddOutlined } from "@ant-design/icons";
 import useIsMobile from "../../../hooks/useIsMobile";
 
 const Brands = () => {
   const [open, setOpen] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null);
-  const [selectedDeleteBrand, setSelectedDeleteBrand] = useState<Brand | null>(null);
+  const [selectedDeleteBrand, setSelectedDeleteBrand] = useState<Brand | null>(
+    null,
+  );
   const [form] = Form.useForm();
   const isMobile = useIsMobile();
 
@@ -34,7 +36,7 @@ const Brands = () => {
   const allClothesQuery = useAllClothesQuery(
     selectedBrand?.key,
     selectedBrand?.is_new ?? false,
-    !!selectedBrand
+    !!selectedBrand,
   );
 
   const updateBrandsMutation = useUpdateBrandsMutation();
@@ -42,7 +44,8 @@ const Brands = () => {
 
   useEffect(() => {
     if (open && allClothesQuery.data && selectedBrand) {
-      const { men, women, child } = allClothesQuery.data[0]?.exist_clothes || {};
+      const { men, women, child } =
+        allClothesQuery.data[0]?.exist_clothes || {};
 
       form.setFieldsValue({
         id: selectedBrand.id,
@@ -131,7 +134,8 @@ const Brands = () => {
 
   return (
     <>
-      <div className="flex flex-wrap gap-4 justify-center">
+      <h1 className="">Бренди та одяг</h1>
+      <div className="flex flex-wrap gap-4 mt-5 justify-center">
         {allBrandsQuery.data?.map((item) => (
           <LogoCard
             key={item.id}
@@ -144,7 +148,11 @@ const Brands = () => {
       </div>
 
       <Modal
-        title={selectedBrand?.is_new ? "Додати новий бренд" : "Редагувати інформацію про бренд"}
+        title={
+          selectedBrand?.is_new
+            ? "Додати новий бренд"
+            : "Редагувати інформацію про бренд"
+        }
         centered
         wrapClassName="!top-2"
         open={open}
@@ -183,8 +191,10 @@ const Brands = () => {
               key: selectedBrand?.key || "",
               name: selectedBrand?.name || "",
               men_clothes: allClothesQuery.data?.[0]?.exist_clothes?.men || [],
-              women_clothes: allClothesQuery.data?.[0]?.exist_clothes?.women || [],
-              child_clothes: allClothesQuery.data?.[0]?.exist_clothes?.child || [],
+              women_clothes:
+                allClothesQuery.data?.[0]?.exist_clothes?.women || [],
+              child_clothes:
+                allClothesQuery.data?.[0]?.exist_clothes?.child || [],
               img_url: selectedBrand?.img_url || "",
               is_active: selectedBrand?.is_active || false,
             }}
@@ -232,10 +242,12 @@ const Brands = () => {
                 placeholder="Please select"
                 options={
                   allClothesQuery.data && allClothesQuery.data.length > 0
-                    ? allClothesQuery.data[0].all_clothes.map((item: string) => ({
-                        label: item,
-                        value: item,
-                      }))
+                    ? allClothesQuery.data[0].all_clothes.map(
+                        (item: string) => ({
+                          label: item,
+                          value: item,
+                        }),
+                      )
                     : []
                 }
               />
@@ -248,10 +260,12 @@ const Brands = () => {
                 placeholder="Please select"
                 options={
                   allClothesQuery.data && allClothesQuery.data.length > 0
-                    ? allClothesQuery.data[0].all_clothes.map((item: string) => ({
-                        label: item,
-                        value: item,
-                      }))
+                    ? allClothesQuery.data[0].all_clothes.map(
+                        (item: string) => ({
+                          label: item,
+                          value: item,
+                        }),
+                      )
                     : []
                 }
               />
@@ -264,10 +278,12 @@ const Brands = () => {
                 placeholder="Please select"
                 options={
                   allClothesQuery.data && allClothesQuery.data.length > 0
-                    ? allClothesQuery.data[0].all_clothes.map((item: string) => ({
-                        label: item,
-                        value: item,
-                      }))
+                    ? allClothesQuery.data[0].all_clothes.map(
+                        (item: string) => ({
+                          label: item,
+                          value: item,
+                        }),
+                      )
                     : []
                 }
               />
@@ -295,9 +311,14 @@ const Brands = () => {
         </Spin>
       </Modal>
       <FloatButton
-        icon={<FileAddOutlined style={{ fontSize: 25 }} />}
+        icon={<AppstoreAddOutlined style={{ fontSize: 25 }} />}
         shape="circle"
-        style={{ right: isMobile ? 30 : 100, bottom: isMobile ? 30 : 100, width: 60, height: 60 }}
+        style={{
+          right: isMobile ? 30 : 100,
+          bottom: isMobile ? 30 : 100,
+          width: 60,
+          height: 60,
+        }}
         className="flex justify-center items-center"
         onClick={() => handleEdit(emptyBrand)}
       />

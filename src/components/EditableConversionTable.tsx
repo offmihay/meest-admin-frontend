@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, InputNumber, Popconfirm, Table, Button, notification } from "antd";
-import { EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined } from "@ant-design/icons";
+import {
+  Form,
+  Input,
+  InputNumber,
+  Popconfirm,
+  Table,
+  Button,
+  notification,
+} from "antd";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  SaveOutlined,
+  CloseOutlined,
+} from "@ant-design/icons";
 
 interface TableDataWithKey {
   key: string;
@@ -52,7 +65,9 @@ const EditableConversionTable: React.FC<EditableConversionTableProps> = ({
   const [editingKey, setEditingKey] = useState<string>("");
   const [newRecordKeys, setNewRecordKeys] = useState<Set<string>>(new Set());
 
-  const [visibleColumns, setVisibleColumns] = useState<Set<string>>(new Set(columns));
+  const [visibleColumns, setVisibleColumns] = useState<Set<string>>(
+    new Set(columns),
+  );
 
   useEffect(() => {
     setVisibleColumns(new Set(columns));
@@ -77,7 +92,7 @@ const EditableConversionTable: React.FC<EditableConversionTableProps> = ({
   const openNotification = (
     type: "success" | "info" | "warning" | "error",
     message: string,
-    description?: string
+    description?: string,
   ) => {
     notification[type]({
       message,
@@ -91,7 +106,8 @@ const EditableConversionTable: React.FC<EditableConversionTableProps> = ({
       const row = (await form.validateFields()) as TableDataWithKey;
 
       const allFilled = columns.some(
-        (field) => row[field] !== null && row[field] !== undefined && row[field] !== ""
+        (field) =>
+          row[field] !== null && row[field] !== undefined && row[field] !== "",
       );
 
       if (!allFilled) {
@@ -166,7 +182,10 @@ const EditableConversionTable: React.FC<EditableConversionTableProps> = ({
             style={{ marginRight: 8 }}
             icon={<EditOutlined />}
           />
-          <Popconfirm title="Are you sure to delete?" onConfirm={() => deleteRow(record.key)}>
+          <Popconfirm
+            title="Are you sure to delete?"
+            onConfirm={() => deleteRow(record.key)}
+          >
             <Button disabled={editingKey !== ""} icon={<DeleteOutlined />} />
           </Popconfirm>
         </span>
@@ -175,7 +194,7 @@ const EditableConversionTable: React.FC<EditableConversionTableProps> = ({
   };
 
   const columnsWithVisibility = tableColumns.filter(
-    (col) => col.dataIndex === "operation" || visibleColumns.has(col.dataIndex)
+    (col) => col.dataIndex === "operation" || visibleColumns.has(col.dataIndex),
   );
 
   const mergedColumns = columnsWithVisibility.map((col) => {
@@ -187,7 +206,8 @@ const EditableConversionTable: React.FC<EditableConversionTableProps> = ({
       ...col,
       onCell: (record: TableDataWithKey) => ({
         record,
-        inputType: typeof record[col.dataIndex] === "number" ? "number" : "text",
+        inputType:
+          typeof record[col.dataIndex] === "number" ? "number" : "text",
         dataIndex: col.dataIndex,
         title: col.title,
         editing: isEditing(record),

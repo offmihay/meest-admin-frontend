@@ -14,7 +14,11 @@ interface FileUploadProps {
   existingData: boolean;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({ onDataParsed, requiredColumns, existingData }) => {
+const FileUpload: React.FC<FileUploadProps> = ({
+  onDataParsed,
+  requiredColumns,
+  existingData,
+}) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [fileReady, setFileReady] = useState(false);
 
@@ -35,10 +39,12 @@ const FileUpload: React.FC<FileUploadProps> = ({ onDataParsed, requiredColumns, 
             complete: (result) => {
               const parsedData = result.data;
               const missingColumns = requiredColumns.filter(
-                (column) => !parsedData[0].hasOwnProperty(column)
+                (column) => !parsedData[0].hasOwnProperty(column),
               );
               if (missingColumns.length > 0) {
-                message.error(`Missing required columns: ${missingColumns.join(", ")}`);
+                message.error(
+                  `Missing required columns: ${missingColumns.join(", ")}`,
+                );
               } else {
                 onDataParsed(parsedData);
                 message.success("File processed successfully");
@@ -100,7 +106,11 @@ const FileUpload: React.FC<FileUploadProps> = ({ onDataParsed, requiredColumns, 
             </Button>
           </Popconfirm>
         ) : (
-          <Button type="primary" onClick={handleUpload} style={{ marginTop: 16 }}>
+          <Button
+            type="primary"
+            onClick={handleUpload}
+            style={{ marginTop: 16 }}
+          >
             Upload
           </Button>
         ))}

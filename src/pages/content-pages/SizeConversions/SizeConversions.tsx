@@ -6,8 +6,11 @@ import {
   useUpdateSysCategoriesMutation,
 } from "../../../hooks/queries";
 import { Button, Select, Spin, notification } from "antd";
-import { RocketOutlined } from "@ant-design/icons";
-import { ConversionMapping, FilteredConversionMapping } from "../../../utils/types/ConversionForm";
+import { CloudUploadOutlined } from "@ant-design/icons";
+import {
+  ConversionMapping,
+  FilteredConversionMapping,
+} from "../../../utils/types/ConversionForm";
 
 const SizeConversions: React.FC = () => {
   const [data, setData] = useState<ConversionMapping[]>([]);
@@ -21,7 +24,9 @@ const SizeConversions: React.FC = () => {
     setSelectedSystemCategory(value);
   };
 
-  const conversionsTableQuery = useConversionsTableQuery(selectedSystemCategory);
+  const conversionsTableQuery = useConversionsTableQuery(
+    selectedSystemCategory,
+  );
 
   useEffect(() => {
     if (conversionsTableQuery.data.length !== 0) {
@@ -36,15 +41,16 @@ const SizeConversions: React.FC = () => {
     if (data.length === 0) return true;
 
     const referenceKeys = Object.keys(data[0]).filter(
-      (key) => data[0][key] !== null && data[0][key] !== ""
+      (key) => data[0][key] !== null && data[0][key] !== "",
     );
     for (let i = 1; i < data.length; i++) {
       const currentKeys = Object.keys(data[i]).filter(
-        (key) => data[i][key] !== null && data[i][key] !== ""
+        (key) => data[i][key] !== null && data[i][key] !== "",
       );
       if (currentKeys.length !== referenceKeys.length) {
         return false;
       }
+
       for (let key of referenceKeys) {
         if (!currentKeys.includes(key)) {
           return false;
@@ -69,7 +75,10 @@ const SizeConversions: React.FC = () => {
   const handleUpdateClick = async () => {
     try {
       if (checkKeysConsistency()) {
-        const req = { system_category: selectedSystemCategory, newSizes: filterData() };
+        const req = {
+          system_category: selectedSystemCategory,
+          newSizes: filterData(),
+        };
         updateSysCategoriesMutation.mutate(req, {
           onSuccess: () => {
             notification.success({
@@ -97,6 +106,7 @@ const SizeConversions: React.FC = () => {
 
   return (
     <>
+      <h1 className="">Таблиці конвертацій</h1>
       <Select
         defaultValue="none"
         style={{ width: 200 }}
@@ -109,12 +119,16 @@ const SizeConversions: React.FC = () => {
             label: category.name,
           })),
         ]}
-        className="mb-4"
+        className="mb-4 mt-5"
       />
       {selectedSystemCategory !== "none" && (
         <>
           <Spin spinning={conversionsTableQuery.isFetching}>
-            <EditableConversionTable data={data} setData={setData} columns={dynamicColumns} />
+            <EditableConversionTable
+              data={data}
+              setData={setData}
+              columns={dynamicColumns}
+            />
           </Spin>
           <div className="flex justify-center mb-6 mt-2">
             <Button
@@ -123,8 +137,8 @@ const SizeConversions: React.FC = () => {
               onClick={handleUpdateClick}
               disabled={conversionsTableQuery.isFetching}
             >
-              <div className="flex items-center justify-center gap-2">
-                <RocketOutlined style={{ fontSize: 25 }} />
+              <div className="flex items-center font-semibold justify-center gap-2">
+                <CloudUploadOutlined style={{ fontSize: 25 }} />
                 <span style={{ fontSize: 16 }}>Оновити інформацію</span>
               </div>
             </Button>

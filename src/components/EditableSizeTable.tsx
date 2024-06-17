@@ -56,7 +56,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
         ))}
       </Select>
     ) : inputType === "number" ? (
-      <InputNumber />
+      <InputNumber className="  " />
     ) : (
       <Input />
     );
@@ -68,7 +68,11 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     },
     {
       validator: (_: any, value: any) => {
-        if (dataIndex === "size_value" && !possibleSizeValues.includes(value) && value !== null) {
+        if (
+          dataIndex === "size_value" &&
+          !possibleSizeValues.includes(value) &&
+          value !== null
+        ) {
           return Promise.reject(new Error("Invalid size value"));
         }
         return Promise.resolve();
@@ -107,7 +111,13 @@ const EditableTable: React.FC<{
   selectedSizeSystem: string;
   setSelectedSizeSystem: React.Dispatch<React.SetStateAction<string>>;
   uniqClothId: number;
-}> = ({ data, setData, possibleSizeValues, selectedSizeSystem, uniqClothId }) => {
+}> = ({
+  data,
+  setData,
+  possibleSizeValues,
+  selectedSizeSystem,
+  uniqClothId,
+}) => {
   const [form] = Form.useForm();
   const [editingKey, setEditingKey] = useState<string>("");
   const [newRecordKeys, setNewRecordKeys] = useState<Set<string>>(new Set());
@@ -124,7 +134,9 @@ const EditableTable: React.FC<{
     "hip_length",
     "pants_length",
     "foot_length",
-  ].filter((col) => data.some((item) => item[col] !== null && item[col] !== ""));
+  ].filter((col) =>
+    data.some((item) => item[col] !== null && item[col] !== ""),
+  );
 
   const [visibleColumns, setVisibleColumns] = useState<Set<string>>(() => {
     return new Set([
@@ -141,7 +153,10 @@ const EditableTable: React.FC<{
   });
 
   useEffect(() => {
-    if (localStorage.getItem("showAll") == "true" || filledBodyParts.length == 0) {
+    if (
+      localStorage.getItem("showAll") == "true" ||
+      filledBodyParts.length == 0
+    ) {
       setVisibleColumns(
         new Set([
           "height",
@@ -153,7 +168,7 @@ const EditableTable: React.FC<{
           "foot_length",
           "size_value",
           "operation",
-        ])
+        ]),
       );
     } else {
       setVisibleColumns(new Set(["size_value", ...filledBodyParts]));
@@ -164,7 +179,8 @@ const EditableTable: React.FC<{
     // Reset size values to null when selectedSizeSystem changes
     const newData = data.map((item) => ({
       ...item,
-      size_value: item.size_system === selectedSizeSystem ? item.size_value : null,
+      size_value:
+        item.size_system === selectedSizeSystem ? item.size_value : null,
     }));
     setData(newData);
   }, [selectedSizeSystem]);
@@ -188,7 +204,7 @@ const EditableTable: React.FC<{
   const openNotification = (
     type: "success" | "info" | "warning" | "error",
     message: string,
-    description?: string
+    description?: string,
   ) => {
     notification[type]({
       message,
@@ -207,11 +223,16 @@ const EditableTable: React.FC<{
 
       const valid = Object.keys(row).some(
         (field) =>
-          field !== "size_value" && field !== "key" && field !== "isNew" && row[field] !== null
+          field !== "size_value" &&
+          field !== "key" &&
+          field !== "isNew" &&
+          row[field] !== null,
       );
 
       if (!valid) {
-        throw new Error("At least one parameter must be filled in, except Size Value");
+        throw new Error(
+          "At least one parameter must be filled in, except Size Value",
+        );
       }
 
       const newData = [...data];
@@ -233,7 +254,7 @@ const EditableTable: React.FC<{
       openNotification(
         "error",
         "Не правильно введені дані",
-        "Хоча б один параметр має бути заповнений, окрім Size Value. Для Size Value допустимі значення можна переглянути в таблиці конвертацій"
+        "Хоча б один параметр має бути заповнений, окрім Size Value. Для Size Value допустимі значення можна переглянути в таблиці конвертацій",
       );
     }
   };
@@ -291,7 +312,7 @@ const EditableTable: React.FC<{
           "pants_length",
           "foot_length",
           "size_value",
-        ])
+        ]),
       );
     } else {
       if (filledBodyParts.length != 0) {
@@ -306,8 +327,10 @@ const EditableTable: React.FC<{
               "hip_length",
               "pants_length",
               "foot_length",
-            ].filter((col) => data.some((item) => item[col] !== null && item[col] !== "")),
-          ])
+            ].filter((col) =>
+              data.some((item) => item[col] !== null && item[col] !== ""),
+            ),
+          ]),
         );
       }
     }
@@ -336,7 +359,10 @@ const EditableTable: React.FC<{
     {
       key: "show_all",
       label: (
-        <Checkbox checked={showAll} onChange={(e) => handleShowAllColumns(e.target.checked)}>
+        <Checkbox
+          checked={showAll}
+          onChange={(e) => handleShowAllColumns(e.target.checked)}
+        >
           Show All
         </Checkbox>
       ),
@@ -405,7 +431,7 @@ const EditableTable: React.FC<{
           disabled={!isEditing(record)}
           onChange={(value) => {
             const newData = data.map((item) =>
-              item.key === record.key ? { ...item, size_value: value } : item
+              item.key === record.key ? { ...item, size_value: value } : item,
             );
             setData(newData);
           }}
@@ -444,14 +470,19 @@ const EditableTable: React.FC<{
               style={{ marginRight: 8 }}
               icon={<EditOutlined />}
             />
-            <Popconfirm title="Are you sure to delete?" onConfirm={() => deleteRow(record.key)}>
+            <Popconfirm
+              title="Are you sure to delete?"
+              onConfirm={() => deleteRow(record.key)}
+            >
               <Button disabled={editingKey !== ""} icon={<DeleteOutlined />} />
             </Popconfirm>
           </span>
         );
       },
     },
-  ].filter((col) => col.dataIndex === "operation" || visibleColumns.has(col.dataIndex));
+  ].filter(
+    (col) => col.dataIndex === "operation" || visibleColumns.has(col.dataIndex),
+  );
 
   const mergedColumns = columns.map((col) => {
     if (!col.editable) {

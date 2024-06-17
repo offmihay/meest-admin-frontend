@@ -17,7 +17,11 @@ const DropdownPrimary: React.FC<DropdownPrimaryProps> = ({
   items,
   baseElement,
 }) => (
-  <Dropdown menu={{ items }} trigger={["click"]}>
+  <Dropdown
+    className=" absolute right-1.5 rounded-md "
+    menu={{ items }}
+    trigger={["click"]}
+  >
     <a onClick={(e) => e.preventDefault()}>
       <Flex gap={5}>{baseElement}</Flex>
     </a>
