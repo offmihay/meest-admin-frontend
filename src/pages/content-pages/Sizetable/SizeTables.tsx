@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import EditableTable from "../../../components/EditableSizeTable";
 import { Select, Button, Divider, notification, Spin } from "antd";
-import { useBrandsQuery, useClothesQuery, useTableDataQuery } from "../../../hooks/queries";
+import {
+  useBrandsQuery,
+  useClothesQuery,
+  useTableDataQuery,
+} from "../../../hooks/queries";
 import { SizeTableData } from "../../../utils/types/SizeTableData";
-import { RocketOutlined } from "@ant-design/icons";
+import { CloudUploadOutlined } from "@ant-design/icons";
 import { postJson } from "../../../api/Api";
 
 type TableDataWithKey = SizeTableData & { key: string };
@@ -49,7 +53,12 @@ const SizeTables: React.FC = () => {
 
   const brandsQuery = useBrandsQuery(selectedGender);
   const clothesQuery = useClothesQuery(selectedGender, selectedBrand);
-  const tableData = useTableDataQuery(isHandleSearch, selectedGender, selectedBrand, selectedCloth);
+  const tableData = useTableDataQuery(
+    isHandleSearch,
+    selectedGender,
+    selectedBrand,
+    selectedCloth,
+  );
 
   useEffect(() => {
     if (tableData.data && tableData.data.conversions) {
@@ -59,7 +68,7 @@ const SizeTables: React.FC = () => {
               ...item,
               key: (index + 1).toString(),
             }))
-          : []
+          : [],
       );
 
       if (tableData.data.conversions.length > 0) {
@@ -67,14 +76,18 @@ const SizeTables: React.FC = () => {
         setUniqClothId(tableData.data.conversions[0].uniq_cloth_id);
         setPossibleSizeSystems(tableData.data.possibleSizeSystems);
         setPossibleSizeValues(
-          tableData.data.possibleSizeValues[tableData.data.conversions[0].size_system]
+          tableData.data.possibleSizeValues[
+            tableData.data.conversions[0].size_system
+          ],
         );
       }
     }
   }, [tableData.data.conversions]);
 
   useEffect(() => {
-    setPossibleSizeValues(tableData.data?.possibleSizeValues[selectedSizeSystem] || []);
+    setPossibleSizeValues(
+      tableData.data?.possibleSizeValues[selectedSizeSystem] || [],
+    );
   }, [selectedSizeSystem, tableData.data]);
 
   const handleUpdateClick = async () => {
@@ -87,7 +100,7 @@ const SizeTables: React.FC = () => {
           item.waist_length !== null ||
           item.hip_length !== null ||
           item.pants_length !== null ||
-          item.foot_length !== null)
+          item.foot_length !== null),
     );
 
     if (isValid) {
@@ -100,7 +113,11 @@ const SizeTables: React.FC = () => {
           }));
         } else {
           tempdata = [
-            { uniq_cloth_id: uniqClothId, size_system: selectedSizeSystem, isEmpty: true },
+            {
+              uniq_cloth_id: uniqClothId,
+              size_system: selectedSizeSystem,
+              isEmpty: true,
+            },
           ];
         }
 
@@ -128,7 +145,8 @@ const SizeTables: React.FC = () => {
 
   return (
     <>
-      <div className="mt-0 flex flex-col lg:flex-row gap-4 items-center md:items-start">
+      <h1 className="">Розмірні таблиці</h1>
+      <div className="mt-0 flex flex-col lg:flex-row gap-4 mt-5 items-center md:items-start">
         <Select
           defaultValue="none"
           style={{ width: 200 }}
@@ -223,8 +241,8 @@ const SizeTables: React.FC = () => {
               onClick={handleUpdateClick}
               disabled={tableData.isFetching}
             >
-              <div className="flex items-center justify-center gap-2">
-                <RocketOutlined style={{ fontSize: 25 }} />
+              <div className="flex items-center font-semibold justify-center gap-2">
+                <CloudUploadOutlined style={{ fontSize: 25 }} />
                 <span style={{ fontSize: 16 }}>Оновити інформацію</span>
               </div>
             </Button>

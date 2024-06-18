@@ -9,6 +9,12 @@ module.exports = {
         green: "#28D3A1",
         lightgrey: "#F3F8FE",
       },
+      width: {
+        "fill-available": "-webkit-fill-available",
+      },
+      height: {
+        "fill-available": "-webkit-fill-available",
+      },
     },
   },
   plugins: [],

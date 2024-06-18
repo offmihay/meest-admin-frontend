@@ -26,9 +26,13 @@ const HomepageLayout = () => {
 
   return (
     <Layout hasSider style={{ background: "white", minHeight: "100dvh" }}>
-      <Sider isCollapsed={isCollapsed} setIsCollapsed={() => setIsCollapsed(!isCollapsed)} />
-      <Layout style={{ marginLeft: isMobile ? 0 : 300 }}>
-        <Header auth={auth} setIsCollapsed={() => setIsCollapsed(!isCollapsed)} />
+      <Header auth={auth} setIsCollapsed={() => setIsCollapsed(!isCollapsed)} />
+      <Sider
+        isCollapsed={isCollapsed}
+        setIsCollapsed={() => setIsCollapsed(!isCollapsed)}
+      />
+
+      <Layout style={{ marginTop: 50, marginLeft: isMobile ? 0 : 300 }}>
         <Content
           style={{
             padding: isMobile ? 10 : 24,

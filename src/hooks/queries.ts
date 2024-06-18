@@ -9,7 +9,8 @@ import { ConversionForm } from "../utils/types/ConversionForm";
 export const useBrandsQuery = (selectedGender: string) => {
   return useQuery({
     queryKey: ["brands", selectedGender],
-    queryFn: (): Promise<Brand[]> => fetchJson(`api/brands?gender=${selectedGender}`),
+    queryFn: (): Promise<Brand[]> =>
+      fetchJson(`api/brands?gender=${selectedGender}`),
     initialData: [],
     enabled: selectedGender != "none",
     refetchOnWindowFocus: false,
@@ -17,7 +18,10 @@ export const useBrandsQuery = (selectedGender: string) => {
   });
 };
 
-export const useClothesQuery = (selectedGender: string, selectedBrand: string) => {
+export const useClothesQuery = (
+  selectedGender: string,
+  selectedBrand: string,
+) => {
   return useQuery({
     queryKey: ["clothes", selectedBrand],
     queryFn: (): Promise<Cloth[]> =>
@@ -33,7 +37,7 @@ export const useTableDataQuery = (
   isHandleSearch: boolean,
   selectedGender: string,
   selectedBrand: string,
-  selectedCloth: string
+  selectedCloth: string,
 ) => {
   return useQuery({
     queryKey: ["tableData", selectedGender, selectedBrand, selectedCloth],
@@ -44,7 +48,7 @@ export const useTableDataQuery = (
       isEmpty: boolean;
     }> =>
       fetchJson(
-        `api/get-table?gender=${selectedGender}&brand=${selectedBrand}&cloth=${selectedCloth}`
+        `api/get-table?gender=${selectedGender}&brand=${selectedBrand}&cloth=${selectedCloth}`,
       ),
     enabled:
       isHandleSearch &&
@@ -75,11 +79,12 @@ export const useAllBrandsQuery = () => {
 export const useAllClothesQuery = (
   brandKey: string | undefined,
   isNew: boolean,
-  hasBrand: boolean
+  hasBrand: boolean,
 ) => {
   return useQuery({
     queryKey: ["exist-clothes", brandKey, isNew],
-    queryFn: () => fetchJson(`api/clothes-existing?brand=${brandKey}&is_new=${isNew}`),
+    queryFn: () =>
+      fetchJson(`api/clothes-existing?brand=${brandKey}&is_new=${isNew}`),
     initialData: {
       all_clothes: [],
       exist_clothes: {
@@ -111,7 +116,8 @@ export const useDeleteBrandMutation = () => {
 export const useConversionsTableQuery = (system_category: string) => {
   return useQuery({
     queryKey: ["conversion-table", system_category],
-    queryFn: () => fetchJson(`api/system-conversions?system_category=${system_category}`),
+    queryFn: () =>
+      fetchJson(`api/system-conversions?system_category=${system_category}`),
     initialData: [],
     refetchOnWindowFocus: false,
     retry: 0,
@@ -132,7 +138,8 @@ export const useSysCategoriesQuery = () => {
 export const useUpdateSysCategoriesMutation = () => {
   return useMutation({
     mutationKey: ["delete-system-categories"],
-    mutationFn: (values: ConversionForm) => postJson("api/update-system-conversions", values),
+    mutationFn: (values: ConversionForm) =>
+      postJson("api/update-system-conversions", values),
     retry: 3,
   });
 };
