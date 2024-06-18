@@ -1,6 +1,10 @@
 import React from "react";
 import { Button, Card, Popconfirm } from "antd";
-import { EditOutlined, DeleteOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  QuestionCircleOutlined,
+} from "@ant-design/icons";
 
 interface LogoCardProps {
   logoSrc: string;
@@ -9,7 +13,12 @@ interface LogoCardProps {
   onDelete: () => void;
 }
 
-const LogoCard: React.FC<LogoCardProps> = ({ logoSrc, companyName, onEdit, onDelete }) => {
+const LogoCard: React.FC<LogoCardProps> = ({
+  logoSrc,
+  companyName,
+  onEdit,
+  onDelete,
+}) => {
   return (
     <Card className="min-w-[180px] max-w-[250px]" hoverable>
       <div className="w-full h-[140px] mb-4 flex justify-center items-center">
@@ -20,7 +29,12 @@ const LogoCard: React.FC<LogoCardProps> = ({ logoSrc, companyName, onEdit, onDel
         />
       </div>
       <div className="flex flex-wrap justify-around w-full gap-4">
-        <Button onClick={onEdit} type="dashed" className="" icon={<EditOutlined />}>
+        <Button
+          onClick={onEdit}
+          type="dashed"
+          className=""
+          icon={<EditOutlined />}
+        >
           Редагувати
         </Button>
         <Popconfirm
